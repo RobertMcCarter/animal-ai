@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import numpy as np
 import os
@@ -7,6 +8,7 @@ from typing import List, Dict
 
 # First - load all the folders
 baseDir = r"D:\data\NRSI\2263B_Turtle Nest Mound"
+
 
 def getDirectories( baseDir:str ) -> List[str]:
     """ Get the list of directories in the given baseDir directory
@@ -50,6 +52,27 @@ mapOfSubDirs = buildMapOfSubDirs(highLevelDirs)
 # Now load the original Excel file
 taggedImagesExcelFile = os.path.join(baseDir, "files.xlsx")
 df = pd.read_excel(taggedImagesExcelFile)
+df = df.replace(np.nan, '', regex=True)
 
+count = 0
+foundImages = 0
+missingFolders = set()
 for i, row in df.iterrows():
-    print(i, ".  ", row.File, " -- ", row.RelativePath, " -- ", row.Folder)
+    count += 1
+    # Guess the folder from the Excel file
+    subDir = row.Folder
+    subDirPath = mapOfSubDirs.get(subDir)
+    if subDirPath is None:
+        missingFolders.add(row.Folder)
+        continue
+    if row.RelativePath != '':
+        subDirPath = os.path.join(subDirPath, row.RelativePath)
+
+    taggedImagePath = os.path.join(subDirPath, row.File)
+    if os.path.isfile(taggedImagePath):
+        foundImages += 1
+    else:
+        print("Failed to find tagged image from row: ", i, " - ", taggedImagePath)
+
+print(f"Found a total of {foundImages} tagged images - out of {count} (missing {count-foundImages})")
+print(f"Failed to find {len(missingFolders)} data folders")
