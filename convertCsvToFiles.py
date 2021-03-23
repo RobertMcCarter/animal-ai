@@ -19,6 +19,7 @@ def getDirectories( baseDir:str ) -> List[str]:
             result.append(filename)
     return result
 
+
 def buildMapOfSubDirs(topLevelDirs: List[str]) -> Dict[str,str]:
     """ Scan through all the of the given "top level" directories, and find all of their
         immediate sub-directories.
@@ -46,16 +47,9 @@ highLevelDirs = getDirectories(baseDir)
 # (because only the sub-directory is used as the "path" in our Excel files from NRSI)
 mapOfSubDirs = buildMapOfSubDirs(highLevelDirs)
 
-print(mapOfSubDirs)
+# Now load the original Excel file
+taggedImagesExcelFile = os.path.join(baseDir, "files.xlsx")
+df = pd.read_excel(taggedImagesExcelFile)
 
-
-# jenniferCsvFile = os.path.join(baseDir, "files.csv")
-# df = pd.read_csv(jenniferCsvFile, index_col=0)
-
-# jenniferExcelFile = os.path.join(baseDir, "files.xlsx")
-# df = pd.read_excel(jenniferExcelFile)
-
-# print( df.dtypes )
-
-# for i, row in df.iterrows():
-#     print(i, ".  ", row.File, " -- ", row.RelativePath, " -- ", row.Folder)
+for i, row in df.iterrows():
+    print(i, ".  ", row.File, " -- ", row.RelativePath, " -- ", row.Folder)
