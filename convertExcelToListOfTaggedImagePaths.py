@@ -7,8 +7,7 @@ from typing import List, Dict
 
 
 # First - load all the folders
-baseDir = r"D:\data\NRSI\2263B_Turtle Nest Mound"
-
+baseDir = r"D:\data\NRSI\2263B_Turtle-Nest-Mound"
 
 def getDirectories( baseDir:str ) -> List[str]:
     """ Get the list of directories in the given baseDir directory
@@ -55,8 +54,8 @@ df = pd.read_excel(taggedImagesExcelFile)
 df = df.replace(np.nan, '', regex=True)
 
 count = 0
-foundImages = 0
 missingFolders = set()
+taggedImagePaths: List[str] = []
 for i, row in df.iterrows():
     count += 1
     # Guess the folder from the Excel file
@@ -70,9 +69,13 @@ for i, row in df.iterrows():
 
     taggedImagePath = os.path.join(subDirPath, row.File)
     if os.path.isfile(taggedImagePath):
-        foundImages += 1
+        print(taggedImagePath)
+        taggedImagePaths.append(taggedImagePath)
     else:
         print("Failed to find tagged image from row: ", i, " - ", taggedImagePath)
 
-print(f"Found a total of {foundImages} tagged images - out of {count} (missing {count-foundImages})")
+
+numTaggedImages = len(taggedImagePaths)
+numMissingImages = count- numTaggedImages
+print(f"Found a total of {numTaggedImages} tagged images - out of {count} (missing {numMissingImages})")
 print(f"Failed to find {len(missingFolders)} data folders")
