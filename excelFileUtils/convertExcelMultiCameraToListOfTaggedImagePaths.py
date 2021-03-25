@@ -5,18 +5,24 @@ import os
 from typing import List
 
 # First - load all the folders
-excelFileToValidate = r"D:\data\NRSI\NRSI_1033H_Camera Data_2019_03_14_All Data.xlsx"
+baseFolder = r"D:\data\NRSI\2140_Turtle Nesting-Wildlife-Cameras-2019"
+excelFileToValidate = os.path.join(baseFolder, r"taggedImages-summary.xlsx")
 
 # Load the Excel file with the file paths to validate
-df = pd.read_excel(excelFileToValidate, "Wildlife Camera Data_QAQC")
+df = pd.read_excel(excelFileToValidate, "RAM-Data")
 df = df.replace(np.nan, '', regex=True)
 
 count = 0
 taggedImagePaths: List[str] = []
 for i, row in df.iterrows():
     count += 1
-    # Guess the folder from the Excel file
-    taggedImagePath:str = str(row["Picture File"]).strip()
+
+    # Try and figure out the tagged image name
+    camera = "Camera-" + str(row["Camera"])
+    subFolder = str(row["Folder"])
+    file = str(row["File"])
+
+    taggedImagePath:str = os.path.join(baseFolder, camera, subFolder, file)
     if os.path.isfile(taggedImagePath):
         print(taggedImagePath)
         taggedImagePaths.append(taggedImagePath)
