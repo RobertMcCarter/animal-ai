@@ -1,4 +1,7 @@
-import math
+r"""
+    Processes the Excel file in:
+        D:\data\NRSI\2263B_Turtle-Nest-Mound
+"""
 import pandas as pd
 import numpy as np
 import os
@@ -59,15 +62,18 @@ taggedImagePaths: List[str] = []
 for i, row in df.iterrows():
     count += 1
     # Guess the folder from the Excel file
-    subDir = row.Folder
+    subDir = str(row["Folder"])
     subDirPath = mapOfSubDirs.get(subDir)
     if subDirPath is None:
-        missingFolders.add(row.Folder)
+        missingFolders.add(row["Folder"])
         continue
-    if row.RelativePath != '':
-        subDirPath = os.path.join(subDirPath, row.RelativePath)
 
-    taggedImagePath = os.path.join(subDirPath, row.File)
+    relativePath = str(row["RelativePath"])
+    if relativePath != '':
+        subDirPath = os.path.join(subDirPath, relativePath)
+
+    file = str(row["File"])
+    taggedImagePath = os.path.join(subDirPath, file)
     if os.path.isfile(taggedImagePath):
         print(taggedImagePath)
         taggedImagePaths.append(taggedImagePath)

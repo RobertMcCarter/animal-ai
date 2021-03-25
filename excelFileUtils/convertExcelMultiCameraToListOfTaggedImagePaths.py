@@ -1,3 +1,7 @@
+r"""
+    Processes the Excel file in:
+        D:\data\NRSI\2140_Turtle Nesting-Wildlife-Cameras-2019
+"""
 import pandas as pd
 import numpy as np
 import os
