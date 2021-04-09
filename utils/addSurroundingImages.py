@@ -1,3 +1,4 @@
+import os
 import re
 import csv
 import pathlib
@@ -78,6 +79,7 @@ def main():
     for [_, imagePath] in animalRecords:
         surroundingFiles = createSurroundingFiles(imagePath, 5)
         for extraFile in surroundingFiles:
+            if not os.path.isfile(extraFile): continue
             if extraFile in animalFileDict: continue
             animalFileDict[extraFile] = 'False'
 
