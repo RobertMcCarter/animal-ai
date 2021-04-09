@@ -2,6 +2,10 @@
 #:import kivy kivy
 #:import win kivy.core.window
 
+# Standard values for use throughout the file
+#:set std_padding 10
+#:set line_height 30
+
 <Root>:
     orientation: 'vertical'
 
@@ -23,15 +27,15 @@
         text_size: self.size
         halign: 'left'
         valign: 'middle'
-        padding_x: 10
-        height: 30
+        padding_x: std_padding
+        height: line_height
 
     StackLayout:
         orientation: 'lr-tb'
         size_hint: 1, None
-        padding: 10, 0, 10, 0
-        spacing: 10, 0
-        height: 30
+        padding: std_padding, 0, std_padding, 0
+        spacing: std_padding, 0
+        height: line_height
 
         Label:
             text: "Is image tagged with an animal: "
@@ -42,8 +46,8 @@
         CheckBox:
             id: isActive
             size_hint: None, None
-            width: 30
-            height: 30
+            width: line_height # Weird, but easy
+            height: line_height
 
     AsyncImage:
         id: image
