@@ -1,0 +1,51 @@
+#:kivy 2.0.0
+#:import kivy kivy
+#:import win kivy.core.window
+
+<Root>:
+    orientation: 'vertical'
+
+    # Make the applicatin's background white rather than black
+    # background_color: 1, 1, 1, 1
+    # canvas.before:
+    #     Color:
+    #         rgba: root.background_color
+    #     Rectangle:
+    #         size: self.size
+    #         pos: self.pos
+
+    # The filename is displayed at the top of the application
+    Label:
+        text: 'Image path: [b]' + image.source + '[/b]'
+        # color: 0,0,0,1
+        markup: True
+        size_hint: 1, None
+        text_size: self.size
+        halign: 'left'
+        valign: 'middle'
+        padding_x: 10
+        height: 30
+
+    StackLayout:
+        orientation: 'lr-tb'
+        size_hint: 1, None
+        padding: 10, 0, 10, 0
+        spacing: 10, 0
+        height: 30
+
+        Label:
+            text: "Is image tagged with an animal: "
+            size_hint: None, None
+            size: self.texture_size
+            padding_y: 5
+
+        CheckBox:
+            id: isActive
+            size_hint: None, None
+            width: 30
+            height: 30
+
+    AsyncImage:
+        id: image
+        source: 'D:/data/NRSI/2140_Turtle Nesting-Wildlife-Cameras-2019/Camera-5/2019_07_10/RCNX0090.JPG'
+        # size_hint: 1,1
