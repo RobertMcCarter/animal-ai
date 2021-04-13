@@ -9,26 +9,40 @@
 <Root>:
     orientation: 'vertical'
 
-    # Make the applicatin's background white rather than black
-    # background_color: 1, 1, 1, 1
-    # canvas.before:
-    #     Color:
-    #         rgba: root.background_color
-    #     Rectangle:
-    #         size: self.size
-    #         pos: self.pos
+    # Binding "global" variable names for the IDs in main.py
+    imageWidget: imageWidget
+    imageNumberWidget: imageNumberWidget
+    isActiveWidget: isActiveWidget
 
     # The filename is displayed at the top of the application
-    Label:
-        text: 'Image path: [b]' + image.source + '[/b]'
-        # color: 0,0,0,1
-        markup: True
+    StackLayout:
+        orientation: 'lr-tb'
         size_hint: 1, None
-        text_size: self.size
-        halign: 'left'
-        valign: 'middle'
-        padding_x: std_padding
+        padding: std_padding, 0, std_padding, 0
+        spacing: std_padding, 0
         height: line_height
+
+        Label:
+            text: 'Image path:'
+            size_hint: None, None
+            size: self.texture_size
+            padding_y: 5
+
+        TextInput:
+            id: imageNumberWidget
+            on_text_validate: root.onJumpToImage
+            text: "------"
+            multiline: False
+            size_hint: None, 1
+            # size: self.texture_size
+            padding_y: 5
+
+        Label:
+            text: imageWidget.source
+            size_hint: None, None
+            size: self.texture_size
+            padding_y: 5
+
 
     StackLayout:
         orientation: 'lr-tb'
@@ -44,12 +58,12 @@
             padding_y: 5
 
         CheckBox:
-            id: isActive
+            id: isActiveWidget
             size_hint: None, None
             width: line_height # Weird, but easy
             height: line_height
 
     AsyncImage:
-        id: image
-        source: 'D:/data/NRSI/2140_Turtle Nesting-Wildlife-Cameras-2019/Camera-5/2019_07_10/RCNX0090.JPG'
+        id: imageWidget
+        source: '--None--'
         # size_hint: 1,1
