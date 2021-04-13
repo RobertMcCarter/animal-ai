@@ -103,7 +103,7 @@ class Root(BoxLayout):
             self.nextImage()
             return True
 
-        if keycode[1] in ('backspace', 'delete', 'spacebar'):
+        if keycode[1] in ('spacebar'):
             self.toggleCurrentImageTag()
             return True
 
