@@ -86,7 +86,8 @@ class Root(BoxLayout):
 
     def _keyboard_closed(self):
         """ Keyboard closed - unbind the keyboard event """
-        print('My keyboard have been closed!')
+        pass
+        # print('My keyboard have been closed!')
         # self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         # self._keyboard = None
 
