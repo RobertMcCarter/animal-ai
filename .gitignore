@@ -1,6 +1,7 @@
 # RAM:
 animals**.txt
 animals**.csv
+animals**.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
