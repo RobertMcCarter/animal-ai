@@ -3,6 +3,8 @@ animals**.txt
 animals**.csv
 animals**.json
 
+.vs**
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
