@@ -10,6 +10,14 @@ class Region:
     w: int
     h: int
 
+    @property
+    def x2(self) -> int:
+        return self.x + self.w
+
+    @property
+    def y2(self) -> int:
+        return self.y + self.h
+
 
 @dataclass(frozen=True)
 class ImageInfo:
