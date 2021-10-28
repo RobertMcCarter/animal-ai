@@ -30,6 +30,15 @@ class Region:
 
 
 def intersects(a: Region, b: Region) -> bool:
+    """Determines if the two image regions intersect at all
+
+    Args:
+        a (Region): The first region to test with
+        b (Region): The second region to test with
+
+    Returns:
+        bool: `True` if the two regions intersect at all, `False` if they do not
+    """
     return not ( (a.x2 < b.x1 or a.x1 > b.x2) or (a.y1 > b.y2 or a.y2 < b.y1) )
 
 
