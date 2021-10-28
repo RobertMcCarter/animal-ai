@@ -1,9 +1,9 @@
 import json
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 import model
 
-def loadAnimalsJson( fileName:str ) -> List[model.ImageInfo]:
+def loadAnimalsJson( fileName:str ) -> model.Images:
     """ Load the animals JSON file
     """
     def imageDecoder(dict:Dict[str, Any]) -> Dict[str,Any] | model.Region | model.ImageInfo:

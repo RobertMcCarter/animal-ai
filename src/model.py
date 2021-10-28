@@ -18,3 +18,9 @@ class ImageInfo:
     tagged: bool
     filePath: str
     regions: List[Region]
+
+
+""" Simple type aliases for a list of images and a list of groups
+"""
+Images = List[ImageInfo]
+ImageGroups = List[Images]

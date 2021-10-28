@@ -4,7 +4,7 @@ from typing import List
 
 import model
 
-def groupImages( images: List[model.ImageInfo] ) -> List[List[model.ImageInfo]]:
+def groupImages( images: model.Images ) -> model.ImageGroups:
     """ Aggregate images into groups of the same file name by index range
     """
     previousPath = None
