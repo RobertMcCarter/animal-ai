@@ -88,5 +88,36 @@ class RegionInserectionTest(unittest.TestCase):
         self.assertTrue( result )
 
 
+class RegionInserectionAnyTest(unittest.TestCase):
+
+    def test_region1_not_in_any_region(self):
+        # Setup
+        region1  = model.Region(10, 10, 10, 10)
+        region2a = model.Region(10, 25, 10, 10)
+        region2b = model.Region(25, 10, 10, 10)
+
+        # Act
+        result = model.intersectsAny(region1, [region2a, region2b])
+
+        # Test
+        self.assertFalse( result )
+
+
+    def test_region1_does_intersect_with_a_region(self):
+        # Setup
+        region1  = model.Region(10, 10, 10, 10)
+        region2a = model.Region(10, 25, 10, 10)
+        region2b = model.Region( 5, 10, 10, 10)
+
+        # Act
+        result = model.intersectsAny(region1, [region2a, region2b])
+
+        # Test
+        self.assertTrue( result )
+
+
+
 if __name__ == '__main__':
     unittest.main()
+
+

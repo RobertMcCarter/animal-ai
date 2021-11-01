@@ -42,6 +42,20 @@ def intersects(a: Region, b: Region) -> bool:
     return not ( (a.x2 < b.x1 or a.x1 > b.x2) or (a.y1 > b.y2 or a.y2 < b.y1) )
 
 
+def intersectsAny(a: Region, testRegions: List[Region]) -> bool:
+    """Determines if the `a` region intersects any region in the list of `testRegions`.
+
+    Args:
+        a (Region): The first region to test with
+        testRegions (List[Region]): The second region to test with
+
+    Returns:
+        bool: `True` if the a region intersect any of the regions in `testRegions`,
+              `False` if they do not
+    """
+    return any( intersects(a, b) for b in testRegions )
+
+
 @dataclass(frozen=True)
 class ImageInfo:
     """ Information about a particular image in our data set
