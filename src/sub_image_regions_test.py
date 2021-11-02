@@ -1,7 +1,7 @@
 import unittest
 
 import model
-import sub_image_creation as sut
+import sub_image_regions as sut
 
 class CreateSubImageOffsetsTests(unittest.TestCase):
 

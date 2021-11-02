@@ -1,14 +1,6 @@
-import cv2 as cv
 from typing import Iterable, List
 
 import model
-
-print(f"OpenCV version: {cv.__version__}")
-
-
-# The image dimensions that we'll produce for training an AI
-IMAGE_WIDTH  = 128
-IMAGE_HEIGHT = 128
 
 
 def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
