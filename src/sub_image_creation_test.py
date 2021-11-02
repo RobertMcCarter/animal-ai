@@ -79,9 +79,9 @@ class createSubImageTaggedRegionsTests(unittest.TestCase):
         # Act
         tagged_regions = [ model.Region(x=6, y=6, w=6, h=6) ]
         result = sut.createSubImageTaggedRegions(
-                    tagged_regions,
                     block_size=model.Size(10,5),
-                    image_size=model.Size(25,12))
+                    image_size=model.Size(25,12),
+                    tagged_regions=tagged_regions)
         result = list(result)
 
         # Test

@@ -68,9 +68,9 @@ def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> I
 
 
 def createSubImageTaggedRegions(
-            tagged_regions: List[model.Region],
             block_size: model.Size,
-            image_size: model.Size ) -> Iterable[model.TaggedRegion]:
+            image_size: model.Size,
+            tagged_regions: List[model.Region] ) -> Iterable[model.TaggedRegion]:
     """ Generates the various regions (and tags them) that need to be extracted from image2,
         tagged and saved as training images.
 
