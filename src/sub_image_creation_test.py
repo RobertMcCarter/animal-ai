@@ -31,7 +31,6 @@ class CreateSubImageOffsetsTests(unittest.TestCase):
         self.assertEqual( result , expected)
 
 
-
 class CreateSubImageRegionsTests(unittest.TestCase):
 
     def test_results_when_image_size_is_exact_multiple_of_block_size(self):
