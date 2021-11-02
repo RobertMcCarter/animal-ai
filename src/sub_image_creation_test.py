@@ -1,7 +1,8 @@
 import unittest
+from typing import Iterable
 
 import model
-import training_image_creation as sut
+import sub_image_creation as sut
 
 class CreateSubImageOffsetsTests(unittest.TestCase):
 
@@ -31,7 +32,7 @@ class CreateSubImageOffsetsTests(unittest.TestCase):
 
 
 
-class CreateSubImageRegions(unittest.TestCase):
+class CreateSubImageRegionsTests(unittest.TestCase):
 
     def test_results_when_image_size_is_exact_multiple_of_block_size(self):
         # No setup needed
@@ -71,6 +72,39 @@ class CreateSubImageRegions(unittest.TestCase):
             model.Region(x=15, y=7, w=10, h=5),
         ]
         self.assertEqual( result , expected)
+
+
+class createSubImageTaggedRegionsTests(unittest.TestCase):
+
+    def test_correct_regions_are_tagged(self):
+        # No setup needed
+        # Act
+        image1 = model.ImageInfo(False, "/data/not-used.jpg", [])
+        image2 = model.ImageInfo(True, "/data/not-used.jpg", [
+            model.Region(x=6, y=6, w=6, h=6)
+        ])
+        result = sut.createSubImageTaggedRegions(
+                    image1,
+                    image2,
+                    block_size=model.Size(10,5),
+                    image_size=model.Size(25,12))
+        result = list(result)
+
+        # Test
+        expected = [
+            model.TaggedRegion(x= 0, y=0, w=10, h=5, tag=False),
+            model.TaggedRegion(x=10, y=0, w=10, h=5, tag=False),
+            model.TaggedRegion(x=15, y=0, w=10, h=5, tag=False),
+
+            model.TaggedRegion(x= 0, y=5, w=10, h=5, tag=True),
+            model.TaggedRegion(x=10, y=5, w=10, h=5, tag=True),
+            model.TaggedRegion(x=15, y=5, w=10, h=5, tag=False),
+
+            model.TaggedRegion(x= 0, y=7, w=10, h=5, tag=True),
+            model.TaggedRegion(x=10, y=7, w=10, h=5, tag=True),
+            model.TaggedRegion(x=15, y=7, w=10, h=5, tag=False),
+        ]
+        self.assertEqual(result , expected)
 
 
 if __name__ == '__main__':
