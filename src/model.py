@@ -1,6 +1,16 @@
 from typing import List
 from dataclasses import dataclass
 
+
+@dataclass(frozen=True)
+class Size:
+    """ A width/height combination - used to describe the width and height of an image
+        or pair of images
+    """
+    width: int
+    height: int
+
+
 @dataclass(frozen=True)
 class Region:
     """ The basic Region (rectangle) in an image
@@ -27,6 +37,13 @@ class Region:
     @property
     def y2(self) -> int:
         return self.y + self.h
+
+
+@dataclass(frozen=True)
+class TaggedRegion(Region):
+    """ Represents a tagged region - either `True` or `False` there is an animal in the region
+    """
+    tag: bool
 
 
 def intersects(a: Region, b: Region) -> bool:
