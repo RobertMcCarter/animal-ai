@@ -67,24 +67,25 @@ def createSmallerSubImageRegions( block_size: model.Size, image_size: model.Size
             yield model.Region(x=x, y=y, w=block_size.width, h=block_size.height)
 
 
-# def createRectangles( image1: model.ImageInfo,
-#                       image2: model.ImageInfo,
-#                       imageDim: model.Dimension ) -> List[model.TaggedRegion]:
-#     """ Generates the various regions (and tags them) that need to be extracted from image2,
-#         tagged and saved as training images.
+def createSmallerSubImageTaggedRegions(
+            image1: model.ImageInfo,
+            image2: model.ImageInfo,
+            block_size: model.Size,
+            image_size: model.Size ) -> Iterable[model.TaggedRegion]:
+    """ Generates the various regions (and tags them) that need to be extracted from image2,
+        tagged and saved as training images.
 
-#     Args:
-#         image1 (model.ImageInfo): The first image information in the pair
-#         image2 (model.ImageInfo): The second image information in the pair of images
-#         imageDim (model.Dimension): The size of both images (they must be equal)
+    Args:
+        image1 (model.ImageInfo): The first image information in the pair
+        image2 (model.ImageInfo): The second image information in the pair of images
+        imageDim (model.Dimension): The size of both images (they must be equal)
 
-#     Returns:
-#         List[model.TaggedRegion]: A list of tagged regions for image 2 that should be
-#             extracted and saved as training data.
-#     """
-#     result: List[model.TaggedRegion] = []
-
-#     for y in range(0, imageDim.w, IMAGE_WIDTH )
-
-
-#     return result
+    Returns:
+        List[model.TaggedRegion]: A list of tagged regions for image 2 that should be
+            extracted and saved as training data.
+    """
+    sub_image_regions = createSmallerSubImageRegions(block_size, image_size)
+    taggedRegions = image1.regions + image2.regions
+    for r in sub_image_regions:
+        tagged = model.intersectsAny( r, taggedRegions )
+        yield model.TaggedRegion(x=r.x, y=r.y, w=r.w, h=r.h, tag=tagged)

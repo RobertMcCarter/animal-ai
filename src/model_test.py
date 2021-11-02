@@ -90,6 +90,17 @@ class RegionInserectionTest(unittest.TestCase):
 
 class RegionInserectionAnyTest(unittest.TestCase):
 
+    def test_region1_not_in_empty_region_list(self):
+        # Setup
+        region  = model.Region(10, 10, 10, 10)
+
+        # Act
+        result = model.intersectsAny(region, [])
+
+        # Test
+        self.assertFalse( result )
+
+
     def test_region1_not_in_any_region(self):
         # Setup
         region1  = model.Region(10, 10, 10, 10)
