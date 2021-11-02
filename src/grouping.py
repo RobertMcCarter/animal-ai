@@ -4,9 +4,9 @@ from typing import List
 
 import model
 
-def groupImages( images: model.Images ) -> model.ImageGroups:
-    """ Aggregate images into groups of the same file name by index range
-    """
+
+def groupImages(images: model.Images) -> model.ImageGroups:
+    """Aggregate images into groups of the same file name by index range"""
     previousPath = None
     previousIndex = None
     results: List[List[model.ImageInfo]] = []
@@ -15,7 +15,7 @@ def groupImages( images: model.Images ) -> model.ImageGroups:
         # Grab the previous path and index #
         p = Path(image.filePath)
         path = p.parents[0]
-        index = int( re.findall(r"\d+", p.stem)[0] )
+        index = int(re.findall(r"\d+", p.stem)[0])
 
         # Is this a new group?
         isNewPath = path != previousPath

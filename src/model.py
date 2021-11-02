@@ -4,19 +4,21 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Size:
-    """ A width/height combination - used to describe the width and height of an image
-        or pair of images
+    """A width/height combination - used to describe the width and height of an image
+    or pair of images
     """
+
     width: int
     height: int
 
 
 @dataclass(frozen=True)
 class Region:
-    """ The basic Region (rectangle) in an image
-        Top left is (0,0) and x increases to the right while
-        y increases down the image.
+    """The basic Region (rectangle) in an image
+    Top left is (0,0) and x increases to the right while
+    y increases down the image.
     """
+
     x: int
     y: int
     w: int
@@ -41,8 +43,8 @@ class Region:
 
 @dataclass(frozen=True)
 class TaggedRegion(Region):
-    """ Represents a tagged region - either `True` or `False` there is an animal in the region
-    """
+    """Represents a tagged region - either `True` or `False` there is an animal in the region"""
+
     tag: bool
 
 
@@ -56,7 +58,7 @@ def intersects(a: Region, b: Region) -> bool:
     Returns:
         bool: `True` if the two regions intersect at all, `False` if they do not
     """
-    return not ( (a.x2 < b.x1 or a.x1 > b.x2) or (a.y1 > b.y2 or a.y2 < b.y1) )
+    return not ((a.x2 < b.x1 or a.x1 > b.x2) or (a.y1 > b.y2 or a.y2 < b.y1))
 
 
 def intersectsAny(a: Region, testRegions: List[Region]) -> bool:
@@ -70,13 +72,13 @@ def intersectsAny(a: Region, testRegions: List[Region]) -> bool:
         bool: `True` if the a region intersect any of the regions in `testRegions`,
               `False` if they do not
     """
-    return any( intersects(a, b) for b in testRegions )
+    return any(intersects(a, b) for b in testRegions)
 
 
 @dataclass(frozen=True)
 class ImageInfo:
-    """ Information about a particular image in our data set
-    """
+    """Information about a particular image in our data set"""
+
     tagged: bool
     filePath: str
     regions: List[Region]

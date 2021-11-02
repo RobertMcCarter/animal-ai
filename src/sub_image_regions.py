@@ -3,8 +3,8 @@ from typing import Iterable, List
 import model
 
 
-def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
-    """ Create the list of x/y-offsets within a larger image where we should extract
+def createSubImageOffsets(block_size: int, image_size: int) -> Iterable[int]:
+    """Create the list of x/y-offsets within a larger image where we should extract
         smaller sub-images.
         This function is generic, and can be used for either the x or y offsets.
         This sounds like it should be trivial, and it mostly is except for the
@@ -24,7 +24,7 @@ def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
     Returns:
         Iterable[int]: The collection of offsets all the smaller images to extract
     """
-    assert( block_size < image_size )
+    assert block_size < image_size
 
     endRange = image_size - (image_size % block_size)
     for i in range(0, endRange, block_size):
@@ -35,8 +35,10 @@ def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
         yield image_size - block_size
 
 
-def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> Iterable[model.Region]:
-    """ Create all of the sub-regions within the main image that should be extracted
+def createSubImageRegions(
+    block_size: model.Size, image_size: model.Size
+) -> Iterable[model.Region]:
+    """Create all of the sub-regions within the main image that should be extracted
         to create our data suitable for input into the AI image tester or for training.
 
     Args:
@@ -46,12 +48,12 @@ def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> I
     Returns:
         Iterable[model.Region]: All of the region within the larger image to extract
     """
-    assert( block_size.width < image_size.width )
-    assert( block_size.height < image_size.height )
+    assert block_size.width < image_size.width
+    assert block_size.height < image_size.height
 
     # Grab all the offsets once (and turn them into lists, we'll reuse them)
-    xOffsets = list( createSubImageOffsets(block_size.width, image_size.width ) )
-    yOffsets = list( createSubImageOffsets(block_size.height, image_size.height) )
+    xOffsets = list(createSubImageOffsets(block_size.width, image_size.width))
+    yOffsets = list(createSubImageOffsets(block_size.height, image_size.height))
 
     # Convert our offsets into regions
     for y in yOffsets:
@@ -60,10 +62,9 @@ def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> I
 
 
 def createSubImageTaggedRegions(
-            block_size: model.Size,
-            image_size: model.Size,
-            tagged_regions: List[model.Region] ) -> Iterable[model.TaggedRegion]:
-    """ Generates the various regions (and tags them based on the given tagged_regions in the
+    block_size: model.Size, image_size: model.Size, tagged_regions: List[model.Region]
+) -> Iterable[model.TaggedRegion]:
+    """Generates the various regions (and tags them based on the given tagged_regions in the
         original image) that can now be be extracted from the image,
         (and then tagged and saved as training data).
 
