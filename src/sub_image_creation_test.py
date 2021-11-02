@@ -1,5 +1,4 @@
 import unittest
-from typing import Iterable
 
 import model
 import sub_image_creation as sut
