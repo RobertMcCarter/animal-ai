@@ -11,7 +11,7 @@ IMAGE_WIDTH  = 128
 IMAGE_HEIGHT = 128
 
 
-def createSmallerSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
+def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
     """ Create the list of x-offsets within a larger image where we should extract
         smaller sub-images.
         This function is generic, and can be used for either the x or y offsets.
@@ -43,7 +43,7 @@ def createSmallerSubImageOffsets( block_size:int, image_size: int ) -> Iterable[
         yield image_size - block_size
 
 
-def createSmallerSubImageRegions( block_size: model.Size, image_size: model.Size ) -> Iterable[model.Region]:
+def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> Iterable[model.Region]:
     """ Create all of the sub-regions within the main image that should be extracted
         to create our data suitable for input into the AI image tester or for training.
 
@@ -58,8 +58,8 @@ def createSmallerSubImageRegions( block_size: model.Size, image_size: model.Size
     assert( block_size.height < image_size.height )
 
     # Grab all the offsets once (and turn them into lists, we'll reuse them)
-    xOffsets = list( createSmallerSubImageOffsets(block_size.width, image_size.width ) )
-    yOffsets = list( createSmallerSubImageOffsets(block_size.height, image_size.height) )
+    xOffsets = list( createSubImageOffsets(block_size.width, image_size.width ) )
+    yOffsets = list( createSubImageOffsets(block_size.height, image_size.height) )
 
     # Convert our offsets into regions
     for y in yOffsets:
@@ -67,7 +67,7 @@ def createSmallerSubImageRegions( block_size: model.Size, image_size: model.Size
             yield model.Region(x=x, y=y, w=block_size.width, h=block_size.height)
 
 
-def createSmallerSubImageTaggedRegions(
+def createSubImageTaggedRegions(
             image1: model.ImageInfo,
             image2: model.ImageInfo,
             block_size: model.Size,
@@ -84,7 +84,7 @@ def createSmallerSubImageTaggedRegions(
         List[model.TaggedRegion]: A list of tagged regions for image 2 that should be
             extracted and saved as training data.
     """
-    sub_image_regions = createSmallerSubImageRegions(block_size, image_size)
+    sub_image_regions = createSubImageRegions(block_size, image_size)
     taggedRegions = image1.regions + image2.regions
     for r in sub_image_regions:
         tagged = model.intersectsAny( r, taggedRegions )
