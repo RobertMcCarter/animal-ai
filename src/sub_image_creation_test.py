@@ -77,13 +77,9 @@ class createSubImageTaggedRegionsTests(unittest.TestCase):
     def test_correct_regions_are_tagged(self):
         # No setup needed
         # Act
-        image1 = model.ImageInfo(False, "/data/not-used.jpg", [])
-        image2 = model.ImageInfo(True, "/data/not-used.jpg", [
-            model.Region(x=6, y=6, w=6, h=6)
-        ])
+        tagged_regions = [ model.Region(x=6, y=6, w=6, h=6) ]
         result = sut.createSubImageTaggedRegions(
-                    image1,
-                    image2,
+                    tagged_regions,
                     block_size=model.Size(10,5),
                     image_size=model.Size(25,12))
         result = list(result)

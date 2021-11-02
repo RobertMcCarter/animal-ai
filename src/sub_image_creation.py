@@ -1,5 +1,5 @@
 import cv2 as cv
-from typing import Iterable
+from typing import Iterable, List
 
 import model
 
@@ -68,8 +68,7 @@ def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> I
 
 
 def createSubImageTaggedRegions(
-            image1: model.ImageInfo,
-            image2: model.ImageInfo,
+            tagged_regions: List[model.Region],
             block_size: model.Size,
             image_size: model.Size ) -> Iterable[model.TaggedRegion]:
     """ Generates the various regions (and tags them) that need to be extracted from image2,
@@ -85,7 +84,6 @@ def createSubImageTaggedRegions(
             extracted and saved as training data.
     """
     sub_image_regions = createSubImageRegions(block_size, image_size)
-    taggedRegions = image1.regions + image2.regions
     for r in sub_image_regions:
-        tagged = model.intersectsAny( r, taggedRegions )
+        tagged = model.intersectsAny( r, tagged_regions )
         yield model.TaggedRegion(x=r.x, y=r.y, w=r.w, h=r.h, tag=tagged)
