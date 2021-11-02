@@ -30,7 +30,7 @@ def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
                           (either the width or the height of the image).
 
     Returns:
-        List[int]: The collection of offsets all the smaller images to extract
+        Iterable[int]: The collection of offsets all the smaller images to extract
     """
     assert( block_size < image_size )
 
@@ -52,7 +52,7 @@ def createSubImageRegions( block_size: model.Size, image_size: model.Size ) -> I
         image_size (model.Size): The larger image size that we're extracting from
 
     Returns:
-        List[model.Region]: All of the region within the larger image to extract
+        Iterable[model.Region]: All of the region within the larger image to extract
     """
     assert( block_size.width < image_size.width )
     assert( block_size.height < image_size.height )
@@ -75,13 +75,15 @@ def createSubImageTaggedRegions(
         tagged and saved as training images.
 
     Args:
-        image1 (model.ImageInfo): The first image information in the pair
-        image2 (model.ImageInfo): The second image information in the pair of images
-        imageDim (model.Dimension): The size of both images (they must be equal)
+        block_size (model.Size): The size of the sub-images to extract
+        image_size (model.Size): The size of the larger image
+        tagged_regions (List[model.Region]):
+            The list of tagged regions within the image
+            that will cause the sub-images to also be tagged
 
     Returns:
-        List[model.TaggedRegion]: A list of tagged regions for image 2 that should be
-            extracted and saved as training data.
+        Iterable[model.TaggedRegion]: A collection of tagged sub-regions for the image
+            that can now be extracted and saved as training data.
     """
     sub_image_regions = createSubImageRegions(block_size, image_size)
     for r in sub_image_regions:
