@@ -4,7 +4,7 @@ import model
 
 
 def createSubImageOffsets( block_size:int, image_size: int ) -> Iterable[int]:
-    """ Create the list of x-offsets within a larger image where we should extract
+    """ Create the list of x/y-offsets within a larger image where we should extract
         smaller sub-images.
         This function is generic, and can be used for either the x or y offsets.
         This sounds like it should be trivial, and it mostly is except for the
@@ -63,8 +63,9 @@ def createSubImageTaggedRegions(
             block_size: model.Size,
             image_size: model.Size,
             tagged_regions: List[model.Region] ) -> Iterable[model.TaggedRegion]:
-    """ Generates the various regions (and tags them) that need to be extracted from image2,
-        tagged and saved as training images.
+    """ Generates the various regions (and tags them based on the given tagged_regions in the
+        original image) that can now be be extracted from the image,
+        (and then tagged and saved as training data).
 
     Args:
         block_size (model.Size): The size of the sub-images to extract
@@ -79,5 +80,5 @@ def createSubImageTaggedRegions(
     """
     sub_image_regions = createSubImageRegions(block_size, image_size)
     for r in sub_image_regions:
-        tagged = model.intersectsAny( r, tagged_regions )
+        tagged = model.intersectsAny(r, tagged_regions)
         yield model.TaggedRegion(x=r.x, y=r.y, w=r.w, h=r.h, tag=tagged)
