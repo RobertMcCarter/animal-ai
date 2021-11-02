@@ -2,7 +2,7 @@ import cv2 as cv
 print(f"OpenCV version: {cv.__version__}")
 
 import model
-import sub_image_extraction
+import sub_image_regions
 
 
 # The image dimensions that we'll produce for training an AI
