@@ -1,7 +1,6 @@
 import unittest
-
-import model
-import grouping as sut
+import src.model as model
+import src.grouping as sut
 
 
 class GroupTest(unittest.TestCase):

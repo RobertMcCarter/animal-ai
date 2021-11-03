@@ -1,6 +1,5 @@
 import unittest
-
-import model
+import src.model as model
 
 
 class RegionInserectionTest(unittest.TestCase):

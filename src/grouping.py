@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 from typing import List
 
-import model
+from . import model
 
 
 def groupImages(images: model.Images) -> model.ImageGroups:
