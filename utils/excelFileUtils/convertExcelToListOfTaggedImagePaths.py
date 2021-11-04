@@ -6,16 +6,14 @@ import pandas as pd
 import numpy as np
 import os
 
-from typing import List
-
 
 # First - load all the folders
 baseDir = r"D:\data\NRSI\2263B_Turtle-Nest-Mound"
 
-def getDirectories( baseDir:str ) -> List[str]:
+def getDirectories( baseDir:str ) -> list[str]:
     """ Get the list of directories in the given baseDir directory
     """
-    result: List[str] = []
+    result: list[str] = []
     filenames= os.listdir(baseDir)
     for filename in filenames:  # loop through all the files and folders
         fullPath = os.path.join(baseDir, filename)
@@ -24,7 +22,7 @@ def getDirectories( baseDir:str ) -> List[str]:
     return result
 
 
-def buildMapOfSubDirs(topLevelDirs: List[str]) -> dict[str,str]:
+def buildMapOfSubDirs(topLevelDirs: list[str]) -> dict[str,str]:
     """ Scan through all the of the given "top level" directories, and find all of their
         immediate sub-directories.
         Returns a dictionary where each key is the name of the sub-directory,
@@ -58,7 +56,7 @@ df = df.replace(np.nan, '', regex=True)
 
 count = 0
 missingFolders = set()
-taggedImagePaths: List[str] = []
+taggedImagePaths: list[str] = []
 for i, row in df.iterrows():
     count += 1
     # Guess the folder from the Excel file

@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Iterable
 
 from . import model
 
@@ -62,7 +62,7 @@ def createSubImageRegions(
 
 
 def createSubImageTaggedRegions(
-    sub_image_regions: Iterable[model.Region], tagged_regions: List[model.Region]
+    sub_image_regions: Iterable[model.Region], tagged_regions: list[model.Region]
 ) -> Iterable[model.TaggedRegion]:
     """Generates the various regions (and tags them based on the given tagged_regions in the
         original image) that can now be be extracted from the image,
@@ -71,7 +71,7 @@ def createSubImageTaggedRegions(
     Args:
         block_size (model.Size): The size of the sub-images to extract
         image_size (model.Size): The size of the larger image
-        tagged_regions (List[model.Region]):
+        tagged_regions (list[model.Region]):
             The list of tagged regions within the image
             that will cause the sub-images to also be tagged
 

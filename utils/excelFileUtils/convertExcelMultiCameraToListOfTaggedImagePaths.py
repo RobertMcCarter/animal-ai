@@ -6,8 +6,6 @@ import pandas as pd
 import numpy as np
 import os
 
-from typing import List
-
 # First - load all the folders
 baseFolder = r"D:\data\NRSI\2140_Turtle Nesting-Wildlife-Cameras-2019"
 excelFileToValidate = os.path.join(baseFolder, r"taggedImages-summary.xlsx")
@@ -17,7 +15,7 @@ df = pd.read_excel(excelFileToValidate, "RAM-Data")
 df = df.replace(np.nan, '', regex=True)
 
 count = 0
-taggedImagePaths: List[str] = []
+taggedImagePaths: list[str] = []
 for i, row in df.iterrows():
     count += 1
 

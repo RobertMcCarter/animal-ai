@@ -6,8 +6,6 @@ import pandas as pd
 import numpy as np
 import os
 
-from typing import List
-
 # First - load all the folders
 excelFileToValidate = r"D:\data\NRSI\1033H\NRSI_1033H_Camera Data_2019_03_14_All Data.xlsx"
 
@@ -16,7 +14,7 @@ df = pd.read_excel(excelFileToValidate, "Wildlife Camera Data_QAQC")
 df = df.replace(np.nan, '', regex=True)
 
 count = 0
-taggedImagePaths: List[str] = []
+taggedImagePaths: list[str] = []
 for i, row in df.iterrows():
     count += 1
     # Guess the folder from the Excel file

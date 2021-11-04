@@ -1,6 +1,5 @@
 import re
 from pathlib import Path
-from typing import List
 
 from . import model
 
@@ -9,8 +8,8 @@ def groupImages(images: model.Images) -> model.ImageGroups:
     """Aggregate images into groups of the same file name by index range"""
     previousPath = None
     previousIndex = None
-    results: List[List[model.ImageInfo]] = []
-    currentGroup: List[model.ImageInfo] = []
+    results: list[list[model.ImageInfo]] = []
+    currentGroup: list[model.ImageInfo] = []
     for image in images:
         # Grab the previous path and index #
         p = Path(image.filePath)

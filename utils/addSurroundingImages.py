@@ -2,12 +2,11 @@ import os
 import re
 import csv
 import pathlib
-from typing import List
 
-def readAnimalsCsvFile( path:str ) -> List[List[str]]:
+def readAnimalsCsvFile( path:str ) -> list[list[str]]:
     """ Read in the animals.csv file
     """
-    rows: List[List[str]] = []
+    rows: list[list[str]] = []
     with open(path, 'r') as csvfile:
         # create a csv reader object
         csvReader = csv.reader(csvfile)
@@ -16,13 +15,13 @@ def readAnimalsCsvFile( path:str ) -> List[List[str]]:
         next(csvReader)
 
         # extracting each data row one by one
-        row: List[str]
+        row: list[str]
         for row in csvReader:
             rows.append(row)
     return rows
 
 
-def writeAnimalsCsvFile( path:str, data:List[List[str]] ) -> None:
+def writeAnimalsCsvFile( path:str, data:list[list[str]] ) -> None:
     """ Write out to the given file path name the new animals data.
     """
     with open(path, 'w', newline='') as csvfile:
@@ -31,7 +30,7 @@ def writeAnimalsCsvFile( path:str, data:List[List[str]] ) -> None:
             csvWriter.writerow(row)
 
 
-def createSurroundingFiles( imagePath:str, distance:int ) -> List[str]:
+def createSurroundingFiles( imagePath:str, distance:int ) -> list[str]:
     r""" Given a file path whose file name ends in a number (ignoring the file extension)
         this function will return a list of additional files names that come
         distance before and distance after the given file name.
@@ -57,7 +56,7 @@ def createSurroundingFiles( imagePath:str, distance:int ) -> List[str]:
     fileIndex = int(fileIndexStr)                   # File index as a number
     numberFormat = '0' + str(len(fileIndexStr))     # We want new numbers in the same format
 
-    result:List[str] = []
+    result:list[str] = []
 
     for i in range(fileIndex-distance, fileIndex+distance+1):
         if i == fileIndex: continue

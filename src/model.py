@@ -1,4 +1,3 @@
-from typing import List
 from dataclasses import dataclass
 
 
@@ -61,12 +60,12 @@ def intersects(a: Region, b: Region) -> bool:
     return not ((a.x2 < b.x1 or a.x1 > b.x2) or (a.y1 > b.y2 or a.y2 < b.y1))
 
 
-def intersectsAny(a: Region, testRegions: List[Region]) -> bool:
+def intersectsAny(a: Region, testRegions: list[Region]) -> bool:
     """Determines if the `a` region intersects any region in the list of `testRegions`.
 
     Args:
         a (Region): The first region to test with
-        testRegions (List[Region]): The second region to test with
+        testRegions (list[Region]): The second region to test with
 
     Returns:
         bool: `True` if the a region intersect any of the regions in `testRegions`,
@@ -81,10 +80,10 @@ class ImageInfo:
 
     tagged: bool
     filePath: str
-    regions: List[Region]
+    regions: list[Region]
 
 
 """ Simple type aliases for a list of images and a list of groups
 """
-Images = List[ImageInfo]
-ImageGroups = List[Images]
+Images = list[ImageInfo]
+ImageGroups = list[Images]

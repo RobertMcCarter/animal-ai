@@ -1,12 +1,11 @@
 import re
 import csv
 from pathlib import Path
-from typing import List, Union
 
-def readTaggedAnimalsCsvFile( path:str ) -> List[List[Union[str,bool]]]:
+def readTaggedAnimalsCsvFile( path:str ) -> list[list[str]]:
     """ Read in the latset/greatest animals CSV file
     """
-    rows: List[List[Union[str,bool]]] = []
+    rows: list[list[str]] = []
     with open(path, 'r') as csvfile:
         # create a csv reader object
         csvReader = csv.reader(csvfile)
@@ -15,7 +14,7 @@ def readTaggedAnimalsCsvFile( path:str ) -> List[List[Union[str,bool]]]:
         next(csvReader)
 
         # extracting each data row one by one
-        row: List[Union[str,bool]]
+        row: list[str]
         for row in csvReader:
             rows.append(row)
     return rows
