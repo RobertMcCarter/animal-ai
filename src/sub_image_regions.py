@@ -62,7 +62,7 @@ def createSubImageRegions(
 
 
 def createSubImageTaggedRegions(
-    block_size: model.Size, image_size: model.Size, tagged_regions: List[model.Region]
+    sub_image_regions: Iterable[model.Region], tagged_regions: List[model.Region]
 ) -> Iterable[model.TaggedRegion]:
     """Generates the various regions (and tags them based on the given tagged_regions in the
         original image) that can now be be extracted from the image,
@@ -79,7 +79,6 @@ def createSubImageTaggedRegions(
         Iterable[model.TaggedRegion]: A collection of tagged sub-regions for the image
             that can now be extracted and saved as training data.
     """
-    sub_image_regions = createSubImageRegions(block_size, image_size)
     for r in sub_image_regions:
         tagged = model.intersectsAny(r, tagged_regions)
         yield model.TaggedRegion(x=r.x, y=r.y, w=r.w, h=r.h, tag=tagged)
