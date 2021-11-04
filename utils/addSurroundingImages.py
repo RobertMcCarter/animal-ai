@@ -2,7 +2,7 @@ import os
 import re
 import csv
 import pathlib
-from typing import List, Dict, Set
+from typing import List
 
 def readAnimalsCsvFile( path:str ) -> List[List[str]]:
     """ Read in the animals.csv file

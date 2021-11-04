@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Any
+from typing import Any
 
 import model
 
@@ -8,8 +8,8 @@ def loadAnimalsJson(fileName: str) -> model.Images:
     """Load the animals JSON file"""
 
     def imageDecoder(
-        dict: Dict[str, Any]
-    ) -> Dict[str, Any] | model.Region | model.ImageInfo:
+        dict: dict[str, Any]
+    ) -> dict[str, Any] | model.Region | model.ImageInfo:
         """Decode a JSON dictionary into either a `Region` or an `ImageInfo`"""
         if "x" in dict:
             return model.Region(x=dict["x"], y=dict["y"], w=dict["w"], h=dict["h"])

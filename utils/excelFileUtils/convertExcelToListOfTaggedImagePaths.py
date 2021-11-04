@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from typing import List, Dict
+from typing import List
 
 
 # First - load all the folders
@@ -24,13 +24,13 @@ def getDirectories( baseDir:str ) -> List[str]:
     return result
 
 
-def buildMapOfSubDirs(topLevelDirs: List[str]) -> Dict[str,str]:
+def buildMapOfSubDirs(topLevelDirs: List[str]) -> dict[str,str]:
     """ Scan through all the of the given "top level" directories, and find all of their
         immediate sub-directories.
         Returns a dictionary where each key is the name of the sub-directory,
         and each value is the full file system path to that sub-directory.
     """
-    mapOfDirs: Dict[str,str] = {}
+    mapOfDirs: dict[str,str] = {}
     for dir in topLevelDirs:
         path = os.path.join(baseDir, dir)
         subDirs = getDirectories(path)
