@@ -28,7 +28,13 @@ def createOutputFilePath(output_folder:str, image_info: model.ImageInfo, tag: mo
     """
     path = Path(image_info.filePath)
     sub_folder = "true" if tag else "false"
-    dest_file_name = f"{path.stem}_{tag.x}x{tag.y}{path.suffix}"
+
+    # Pad the x/y dimension to keep the images sort of sorted
+    x = str(tag.x).zfill(4)
+    y = str(tag.y).zfill(4)
+
+    # Now we can build the complete output file path (including the file name and ext)
+    dest_file_name = f"{path.stem}_{x}x{y}{path.suffix}"
     result = os.path.join(output_folder, sub_folder, dest_file_name)
     return result
 

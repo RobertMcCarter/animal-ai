@@ -6,8 +6,8 @@ import src.training_sub_image_extraction as sut
 class CreateOutputFilePathTests(unittest.TestCase):
     def test_file_name_when_true(self):
         # Setup
-        x = 234
-        y = 968
+        x = 23
+        y = 966
         tag = model.TaggedRegion(x,y,10,10, True)
         dest_folder = "/data/output"
 
@@ -17,8 +17,8 @@ class CreateOutputFilePathTests(unittest.TestCase):
         result = sut.createOutputFilePath(dest_folder, image_info, tag)
 
         # Test
-        expected = f"{dest_folder}/true/test_{x}x{y}.png"
-        result = result.replace("\\", "/")  # So we can test consistently
+        expected = f"{dest_folder}/true/test_0023x0966.png"
+        result = result.replace("\\", "/")  # So we can test consistently on any platform
         self.assertEqual(result, expected)
 
 
