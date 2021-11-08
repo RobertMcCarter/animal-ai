@@ -83,7 +83,10 @@ class ImageInfo:
     regions: list[Region]
 
 
-""" Simple type aliases for a list of images and a list of groups
-"""
-Images = list[ImageInfo]
-ImageGroups = list[Images]
+@dataclass(frozen=True)
+class ImagesInfo:
+    """ The information stored in the `animals.json` file, including metadata
+    """
+
+    maxViewed: int
+    images: list[ImageInfo]

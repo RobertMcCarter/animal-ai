@@ -1,16 +1,18 @@
 import json
 from typing import Any
 
-import model
+from src import model
 
 
-def loadAnimalsJson(fileName: str) -> model.Images:
+def loadAnimalsJson(fileName: str) -> model.ImagesInfo:
     """Load the animals JSON file"""
 
     def imageDecoder(
         dict: dict[str, Any]
-    ) -> dict[str, Any] | model.Region | model.ImageInfo:
+    ) -> dict[str, Any] | model.Region | model.ImageInfo | model.ImagesInfo:
         """Decode a JSON dictionary into either a `Region` or an `ImageInfo`"""
+        if "maxViewed" in dict:
+            return model.ImagesInfo(maxViewed=dict["maxViewed"], images=dict["images"])
         if "x" in dict:
             return model.Region(x=dict["x"], y=dict["y"], w=dict["w"], h=dict["h"])
         if "tagged" in dict:
@@ -29,5 +31,7 @@ def loadAnimalsJson(fileName: str) -> model.Images:
 
 # Quick bit of test code
 if __name__ == "__main__":
-    data = loadAnimalsJson("./animals.json")
+    # Load the animals json file
+    data: list[model.ImageInfo] = loadAnimalsJson("./animals.json")
+
     print(data)

@@ -1,0 +1,22 @@
+{
+  "maxViewed": 5508,
+  "images": [
+    {
+      "tagged": false,
+      "filePath": "D:\\data\\test\\STC_2020.JPG",
+      "regions": []
+    },
+    {
+      "tagged": true,
+      "filePath": "D:\\data\\test\\STC_2021.JPG",
+      "regions": [
+        {
+          "x": 0,
+          "y": 251,
+          "w": 78,
+          "h": 222
+        }
+      ]
+    }
+  ]
+}
