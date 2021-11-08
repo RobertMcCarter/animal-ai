@@ -157,8 +157,6 @@ def main():
                 image_info, output_folder, saveTaggedSubImage, saveUntaggedSubImage
             )
 
-            exit()
-
 
 if __name__ == "__main__":
     main()
