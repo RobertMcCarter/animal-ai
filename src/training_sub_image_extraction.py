@@ -144,7 +144,9 @@ def main():
     images_data_file: model.ImagesInfo = aj.loadAnimalsJson("animals.json")
 
     # Group them
-    image_groups: list[list[model.ImageInfo]] = grouping.groupImages(images_data_file.images)
+    image_groups: list[list[model.ImageInfo]] = grouping.groupImages(
+        images_data_file.images
+    )
 
     # Where we will save the 128x128 training images
     output_folder = r"D:\data\NRSI\__ai_training_images"

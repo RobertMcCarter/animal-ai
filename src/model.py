@@ -85,8 +85,7 @@ class ImageInfo:
 
 @dataclass(frozen=True)
 class ImagesInfo:
-    """ The information stored in the `animals.json` file, including metadata
-    """
+    """The information stored in the `animals.json` file, including metadata"""
 
     maxViewed: int
     images: list[ImageInfo]
