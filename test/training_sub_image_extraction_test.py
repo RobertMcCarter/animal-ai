@@ -8,17 +8,39 @@ class CreateOutputFilePathTests(unittest.TestCase):
         # Setup
         x = 23
         y = 966
-        tag = model.TaggedRegion(x,y,10,10, True)
+        region = model.TaggedRegion(x, y, 10, 10, True)
         dest_folder = "/data/output"
 
         image_info = model.ImageInfo(False, "/data/input/foo/bar/test.png", [])
 
         # Act
-        result = sut.createOutputFilePath(dest_folder, image_info, tag)
+        result = sut.createOutputFilePath(dest_folder, image_info, region)
 
         # Test
         expected = f"{dest_folder}/true/test_0023x0966.png"
-        result = result.replace("\\", "/")  # So we can test consistently on any platform
+        result = result.replace(
+            "\\", "/"
+        )  # So we can test consistently on any platform
+        self.assertEqual(result, expected)
+
+
+    def test_file_name_when_false(self):
+        # Setup
+        x = 23
+        y = 966
+        region = model.TaggedRegion(x, y, 10, 10, False)
+        dest_folder = "/data/output"
+
+        image_info = model.ImageInfo(False, "/data/input/foo/bar/test.png", [])
+
+        # Act
+        result = sut.createOutputFilePath(dest_folder, image_info, region)
+
+        # Test
+        expected = f"{dest_folder}/false/test_0023x0966.png"
+        result = result.replace(
+            "\\", "/"
+        )  # So we can test consistently on any platform
         self.assertEqual(result, expected)
 
 
