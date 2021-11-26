@@ -48,55 +48,6 @@ def createOutputFilePath(
 SaveSubImageFn = Callable[[str, model.ImageInfo, model.TaggedRegion, Any], None]
 
 
-def breakUpImageIntoTaggedSubImages(
-    image_info: model.ImageInfo,
-    output_folder: str,
-    saveTaggedSubImageFn: SaveSubImageFn,
-    saveUnTaggedSubImageFn: SaveSubImageFn,
-    block_size: model.Size = BLOCK_SIZE,
-):
-    """Break up the given `image` into `block_size` sized sub-images and save them to the
-    given `outputFolder` based on the sub-image tag value.
-
-    Args:
-        image_info (model.ImageInfo): The original large image information to break-up
-            into smaller pieces
-            (this is the image that will be loaded into memory and cut up)
-        block_size (model.Size): The target size for the smaller sub-images
-        image info the sub image
-
-    Returns:
-        Iterable[Any]: An iterable of images
-    """
-    assert image_info is not None
-    assert block_size is not None
-
-    # Load the image and grab its dimensions
-    image: Any = cv.imread(image_info.filePath)
-    height, width = image.shape[0], image.shape[1]
-    image_size = model.Size(width, height)
-
-    # Create the sub-regions that we need to break the large image into
-    sub_image_regions = sir.createSubImageRegions(block_size, image_size)
-    sub_image_tagged_regions = sir.createSubImageTaggedRegions(
-        sub_image_regions, image_info.regions
-    )
-
-    # Loop over each sub-image region
-    for sr in sub_image_tagged_regions:
-        # Numpy uses row, col notation instead of col, row
-        # From: https://stackoverflow.com/questions/67353650/extract-part-of-a-image-using-opencv
-        # or: https://stackoverflow.com/questions/15589517/how-to-crop-an-image-in-opencv-using-python
-        # or: https://stackoverflow.com/questions/9084609/how-to-copy-a-image-region-using-opencv-in-python
-        sub_image = image[sr.y1 : sr.y2, sr.x1 : sr.x2]
-
-        # Save it!
-        if sr.tag:
-            saveTaggedSubImageFn(output_folder, image_info, sr, sub_image)
-        else:
-            saveUnTaggedSubImageFn(output_folder, image_info, sr, sub_image)
-
-
 def saveTaggedSubImage(
     output_folder: str,
     image_info: model.ImageInfo,
@@ -113,7 +64,7 @@ def saveTaggedSubImage(
         region (model.TaggedRegion): The tagged information about the sub-image being saved
         sub_image (Any): The actual sub-image data
     """
-    output_file = createOutputFilePath(output_folder, image_info, region.tag)
+    output_file = createOutputFilePath(output_folder, image_info, region)
     cv.imwrite(output_file, sub_image)
 
 
@@ -150,15 +101,48 @@ def main():
 
     # Where we will save the 128x128 training images
     output_folder = r"D:\data\NRSI\__ai_training_images"
+    print("Output folder: ", output_folder)
 
     # For every group
     for animal_group in image_groups:
+        # For each group we want to track the previous
+        previous_image: Any | None = None
+        print("Next group...")
         for image_info in animal_group:
-            # Break up the image
-            breakUpImageIntoTaggedSubImages(
-                image_info, output_folder, saveTaggedSubImage, saveUntaggedSubImage
+            # Load the image and grab its dimensions
+            current_image: Any = cv.imread(image_info.filePath)
+            height, width = current_image.shape[0], current_image.shape[1]
+            image_size = model.Size(width, height)
+
+            # Calculate the difference with the previous image
+            if previous_image is None:
+                previous_image = current_image
+                continue
+            print("Processing: ", image_info.filePath)
+            image_diff = current_image - previous_image
+
+            # Create the sub-regions that we need to break the large image into
+            sub_image_regions = sir.createSubImageRegions(BLOCK_SIZE, image_size)
+            sub_image_tagged_regions = sir.createSubImageTaggedRegions(
+                sub_image_regions, image_info.regions
             )
 
+            # Loop over each sub-image region
+            for sr in sub_image_tagged_regions:
+                # Numpy uses row, col notation instead of col, row
+                # From: https://stackoverflow.com/questions/67353650/extract-part-of-a-image-using-opencv
+                # or: https://stackoverflow.com/questions/15589517/how-to-crop-an-image-in-opencv-using-python
+                # or: https://stackoverflow.com/questions/9084609/how-to-copy-a-image-region-using-opencv-in-python
+                sub_image_diff = image_diff[sr.y1 : sr.y2, sr.x1 : sr.x2]
+
+                # Save it!
+                if sr.tag:
+                    saveTaggedSubImage(output_folder, image_info, sr, sub_image_diff)
+                else:
+                    saveUntaggedSubImage(output_folder, image_info, sr, sub_image_diff)
+
+            # Update the previous image for the next image subtraction
+            previous_image = current_image
 
 if __name__ == "__main__":
     main()
