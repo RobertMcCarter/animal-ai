@@ -4,7 +4,7 @@ install:
 		pipenv install
 
 format:
-	black src/*.py test/*.py
+	black src/*.py test/*.py ui-tagger/*.py utils/*.py
 
 lint:
 	pylint --disable=R,C,W1203,E1101 mlib cli src/*.py

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from src import model
-from src import animals_json as aj
+from src import data_serialization_json as ds
 from src import grouping
 from src import sub_image_regions as sir
 
@@ -134,7 +134,7 @@ def main():
     """Process the main images `.json` data file to create 128x128 training sub-images."""
 
     # Load the list of animals from the animals JSON file
-    images_data_file: model.ImagesInfo = aj.loadAnimalsJson("animals.json")
+    images_data_file: model.ImagesCollection = ds.loadAnimalsJson("animals.json")
 
     # Group them
     image_groups: list[list[model.ImageInfo]] = grouping.groupImages(

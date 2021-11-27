@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from src import model
+import src.model as model
 
 
 def createSubImageOffsets(block_size: int, image_size: int) -> Iterable[int]:

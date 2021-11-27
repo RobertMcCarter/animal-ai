@@ -1,7 +1,7 @@
 import unittest
 import pathlib
 import src.model as model
-import src.animals_json as sut
+import src.data_serialization_json as sut
 
 
 class LoadAnimalsJson(unittest.TestCase):
