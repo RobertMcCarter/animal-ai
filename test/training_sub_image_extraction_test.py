@@ -8,7 +8,7 @@ class CreateOutputFilePathTests(unittest.TestCase):
         # Setup
         x = 23
         y = 966
-        region = model.TaggedRegion(x, y, 10, 10, True)
+        region = model.TaggedRegion2d(x, y, 10, 10, True)
         dest_folder = "/data/output"
 
         image_info = model.ImageInfo(False, "/data/input/foo/bar/test.png", [])
@@ -17,7 +17,7 @@ class CreateOutputFilePathTests(unittest.TestCase):
         result = sut.createOutputFilePath(dest_folder, image_info, region)
 
         # Test
-        expected = f"{dest_folder}/true/test_0023x0966.png"
+        expected = f"{dest_folder}/true/test_@0023x0966.png"
         result = result.replace(
             "\\", "/"
         )  # So we can test consistently on any platform
@@ -27,7 +27,7 @@ class CreateOutputFilePathTests(unittest.TestCase):
         # Setup
         x = 23
         y = 966
-        region = model.TaggedRegion(x, y, 10, 10, False)
+        region = model.TaggedRegion2d(x, y, 10, 10, False)
         dest_folder = "/data/output"
 
         image_info = model.ImageInfo(False, "/data/input/foo/bar/test.png", [])
@@ -36,7 +36,7 @@ class CreateOutputFilePathTests(unittest.TestCase):
         result = sut.createOutputFilePath(dest_folder, image_info, region)
 
         # Test
-        expected = f"{dest_folder}/false/test_0023x0966.png"
+        expected = f"{dest_folder}/false/test_@0023x0966.png"
         result = result.replace(
             "\\", "/"
         )  # So we can test consistently on any platform

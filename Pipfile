@@ -7,6 +7,7 @@ name = "pypi"
 opencv-contrib-python = "*"
 pillow = "*"
 piexif = "*"
+aiofiles = "*"
 
 [dev-packages]
 ipykernel = "*"

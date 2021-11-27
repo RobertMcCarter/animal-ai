@@ -9,12 +9,12 @@ def loadAnimalsJson(fileName: str) -> model.ImagesInfo:
 
     def imageDecoder(
         dict: dict[str, Any]
-    ) -> dict[str, Any] | model.Region | model.ImageInfo | model.ImagesInfo:
+    ) -> dict[str, Any] | model.Region2d | model.ImageInfo | model.ImagesInfo:
         """Decode a JSON dictionary into either a `Region` or an `ImageInfo`"""
         if "maxViewed" in dict:
             return model.ImagesInfo(maxViewed=dict["maxViewed"], images=dict["images"])
         if "x" in dict:
-            return model.Region(x=dict["x"], y=dict["y"], w=dict["w"], h=dict["h"])
+            return model.Region2d(x=dict["x"], y=dict["y"], w=dict["w"], h=dict["h"])
         if "tagged" in dict:
             return model.ImageInfo(
                 tagged=dict["tagged"],

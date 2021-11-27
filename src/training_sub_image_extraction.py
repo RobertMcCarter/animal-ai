@@ -16,11 +16,11 @@ print(f"OpenCV version: {cv.__version__}")
 # The image dimensions that we'll produce for training an AI
 IMAGE_WIDTH = 128
 IMAGE_HEIGHT = 128
-BLOCK_SIZE = model.Size(IMAGE_WIDTH, IMAGE_HEIGHT)
+BLOCK_SIZE = model.Size2d(IMAGE_WIDTH, IMAGE_HEIGHT)
 
 
 def createOutputFilePath(
-    output_folder: str, image_info: model.ImageInfo, region: model.TaggedRegion
+    output_folder: str, image_info: model.ImageInfo, region: model.TaggedRegion2d
 ) -> str:
     """Creates the complete output file path for the given tagged region
 
@@ -47,13 +47,13 @@ def createOutputFilePath(
 
 # The callable (function) type that the `breakUpImageIntoTaggedSubImages` function
 # uses to save either positive or negatively tagged images
-SaveSubImageFn = Callable[[str, model.ImageInfo, model.TaggedRegion, Any], None]
+SaveSubImageFn = Callable[[str, model.ImageInfo, model.TaggedRegion2d, Any], None]
 
 
 def saveTaggedSubImage(
     output_folder: str,
     image_info: model.ImageInfo,
-    region: model.TaggedRegion,
+    region: model.TaggedRegion2d,
     sub_image: Any,
 ) -> None:
     """Save a positively tagged sub-image
@@ -73,7 +73,7 @@ def saveTaggedSubImage(
 def saveUntaggedSubImage(
     output_folder: str,
     image_info: model.ImageInfo,
-    region: model.TaggedRegion,
+    region: model.TaggedRegion2d,
     sub_image: Any,
 ) -> None:
     """Save a sub-image that was tagged False
@@ -158,7 +158,7 @@ def main():
             # Load the image and grab its dimensions
             current_image: Any = cv.imread(image_info.filePath)
             height, width = current_image.shape[0], current_image.shape[1]
-            image_size = model.Size(width, height)
+            image_size = model.Size2d(width, height)
 
             # Check that we have a previous image to operate on
             if previous_image is None:

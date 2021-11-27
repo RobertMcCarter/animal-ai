@@ -36,8 +36,8 @@ def createSubImageOffsets(block_size: int, image_size: int) -> Iterable[int]:
 
 
 def createSubImageRegions(
-    block_size: model.Size, image_size: model.Size
-) -> Iterable[model.Region]:
+    block_size: model.Size2d, image_size: model.Size2d
+) -> Iterable[model.Region2d]:
     """Create all of the sub-regions within the main image that should be extracted
         to create our data suitable for input into the AI image tester or for training.
 
@@ -58,12 +58,12 @@ def createSubImageRegions(
     # Convert our offsets into regions
     for y in yOffsets:
         for x in xOffsets:
-            yield model.Region(x=x, y=y, w=block_size.width, h=block_size.height)
+            yield model.Region2d(x=x, y=y, w=block_size.width, h=block_size.height)
 
 
 def createSubImageTaggedRegions(
-    sub_image_regions: Iterable[model.Region], tagged_regions: list[model.Region]
-) -> Iterable[model.TaggedRegion]:
+    sub_image_regions: Iterable[model.Region2d], tagged_regions: list[model.Region2d]
+) -> Iterable[model.TaggedRegion2d]:
     """Generates the various regions (and tags them based on the given tagged_regions in the
         original image) that can now be be extracted from the image,
         (and then tagged and saved as training data).
@@ -81,4 +81,4 @@ def createSubImageTaggedRegions(
     """
     for r in sub_image_regions:
         tagged = model.intersectsAny(r, tagged_regions)
-        yield model.TaggedRegion(x=r.x, y=r.y, w=r.w, h=r.h, tag=tagged)
+        yield model.TaggedRegion2d(x=r.x, y=r.y, w=r.w, h=r.h, tag=tagged)

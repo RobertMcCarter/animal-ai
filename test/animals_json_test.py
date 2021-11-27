@@ -20,7 +20,7 @@ class LoadAnimalsJson(unittest.TestCase):
         expected2 = model.ImageInfo(
             True,
             "D:\\data\\test\\STC_2021.JPG",
-            [model.Region(x=0, y=251, w=78, h=222)],
+            [model.Region2d(x=0, y=251, w=78, h=222)],
         )
 
         self.assertEqual(result.images[0], expected1)

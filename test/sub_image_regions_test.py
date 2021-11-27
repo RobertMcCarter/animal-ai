@@ -33,16 +33,16 @@ class CreateSubImageRegionsTests(unittest.TestCase):
         # No setup needed
         # Act
         result = sut.createSubImageRegions(
-            block_size=model.Size(10, 5), image_size=model.Size(20, 10)
+            block_size=model.Size2d(10, 5), image_size=model.Size2d(20, 10)
         )
         result = list(result)
 
         # Test
         expected = [
-            model.Region(x=0, y=0, w=10, h=5),
-            model.Region(x=10, y=0, w=10, h=5),
-            model.Region(x=0, y=5, w=10, h=5),
-            model.Region(x=10, y=5, w=10, h=5),
+            model.Region2d(x=0, y=0, w=10, h=5),
+            model.Region2d(x=10, y=0, w=10, h=5),
+            model.Region2d(x=0, y=5, w=10, h=5),
+            model.Region2d(x=10, y=5, w=10, h=5),
         ]
         self.assertEqual(result, expected)
 
@@ -50,21 +50,21 @@ class CreateSubImageRegionsTests(unittest.TestCase):
         # No setup needed
         # Act
         result = sut.createSubImageRegions(
-            block_size=model.Size(10, 5), image_size=model.Size(25, 12)
+            block_size=model.Size2d(10, 5), image_size=model.Size2d(25, 12)
         )
         result = list(result)
 
         # Test
         expected = [
-            model.Region(x=0, y=0, w=10, h=5),
-            model.Region(x=10, y=0, w=10, h=5),
-            model.Region(x=15, y=0, w=10, h=5),
-            model.Region(x=0, y=5, w=10, h=5),
-            model.Region(x=10, y=5, w=10, h=5),
-            model.Region(x=15, y=5, w=10, h=5),
-            model.Region(x=0, y=7, w=10, h=5),
-            model.Region(x=10, y=7, w=10, h=5),
-            model.Region(x=15, y=7, w=10, h=5),
+            model.Region2d(x=0, y=0, w=10, h=5),
+            model.Region2d(x=10, y=0, w=10, h=5),
+            model.Region2d(x=15, y=0, w=10, h=5),
+            model.Region2d(x=0, y=5, w=10, h=5),
+            model.Region2d(x=10, y=5, w=10, h=5),
+            model.Region2d(x=15, y=5, w=10, h=5),
+            model.Region2d(x=0, y=7, w=10, h=5),
+            model.Region2d(x=10, y=7, w=10, h=5),
+            model.Region2d(x=15, y=7, w=10, h=5),
         ]
         self.assertEqual(result, expected)
 
@@ -73,9 +73,9 @@ class createSubImageTaggedRegionsTests(unittest.TestCase):
     def test_correct_regions_are_tagged(self):
         # No setup needed
         # Act
-        tagged_regions = [model.Region(x=6, y=6, w=6, h=6)]
+        tagged_regions = [model.Region2d(x=6, y=6, w=6, h=6)]
         sub_image_regions = sut.createSubImageRegions(
-            block_size=model.Size(10, 5), image_size=model.Size(25, 12)
+            block_size=model.Size2d(10, 5), image_size=model.Size2d(25, 12)
         )
 
         result = sut.createSubImageTaggedRegions(sub_image_regions, tagged_regions)
@@ -83,15 +83,15 @@ class createSubImageTaggedRegionsTests(unittest.TestCase):
 
         # Test
         expected = [
-            model.TaggedRegion(x=0, y=0, w=10, h=5, tag=False),
-            model.TaggedRegion(x=10, y=0, w=10, h=5, tag=False),
-            model.TaggedRegion(x=15, y=0, w=10, h=5, tag=False),
-            model.TaggedRegion(x=0, y=5, w=10, h=5, tag=True),
-            model.TaggedRegion(x=10, y=5, w=10, h=5, tag=True),
-            model.TaggedRegion(x=15, y=5, w=10, h=5, tag=False),
-            model.TaggedRegion(x=0, y=7, w=10, h=5, tag=True),
-            model.TaggedRegion(x=10, y=7, w=10, h=5, tag=True),
-            model.TaggedRegion(x=15, y=7, w=10, h=5, tag=False),
+            model.TaggedRegion2d(x=0, y=0, w=10, h=5, tag=False),
+            model.TaggedRegion2d(x=10, y=0, w=10, h=5, tag=False),
+            model.TaggedRegion2d(x=15, y=0, w=10, h=5, tag=False),
+            model.TaggedRegion2d(x=0, y=5, w=10, h=5, tag=True),
+            model.TaggedRegion2d(x=10, y=5, w=10, h=5, tag=True),
+            model.TaggedRegion2d(x=15, y=5, w=10, h=5, tag=False),
+            model.TaggedRegion2d(x=0, y=7, w=10, h=5, tag=True),
+            model.TaggedRegion2d(x=10, y=7, w=10, h=5, tag=True),
+            model.TaggedRegion2d(x=15, y=7, w=10, h=5, tag=False),
         ]
         self.assertEqual(result, expected)
 
