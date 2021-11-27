@@ -10,7 +10,7 @@ class LoadAnimalsJson(unittest.TestCase):
         test_data_file = pathlib.Path(__file__).parent / "_test_animals.json"
 
         # Act
-        result = sut.loadAnimalsJson(str(test_data_file))
+        result = sut.loadImagesCollectionFromJson(str(test_data_file))
 
         # Test
         self.assertEqual(result.maxViewed, 5508)

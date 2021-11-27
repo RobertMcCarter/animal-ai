@@ -31,7 +31,7 @@ def deSerializeImagesInfo(dict: dict[str, Any]) -> model.ImagesCollection:
     return model.ImagesCollection(maxViewed=dict["maxViewed"], images=dict["images"])
 
 
-def loadAnimalsJson(file_name: str) -> model.ImagesCollection:
+def loadImagesCollectionFromJson(file_name: str) -> model.ImagesCollection:
     """Load the animals JSON file"""
     assert file_name
     assert os.path.isfile(file_name)

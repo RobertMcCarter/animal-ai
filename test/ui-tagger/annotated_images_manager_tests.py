@@ -3,7 +3,7 @@ import model
 import dataAccessLayer
 import testData
 
-from .region2d import Size2d
+from src.model import Size2d
 
 
 class TestClearImagesOutsideRange(unittest.IsolatedAsyncioTestCase):
@@ -37,24 +37,28 @@ class TestClearImagesOutsideRange(unittest.IsolatedAsyncioTestCase):
         model.clearImagesOutsideRange(annotations, index, before, after)
 
         # Test that item 10 still has its images
-        self.assertIsNotNone( annotations[10].image )
-        self.assertIsNotNone( annotations[10].scaledImage )
+        self.assertIsNotNone(annotations[10].image)
+        self.assertIsNotNone(annotations[10].scaledImage)
 
         # Test - that before index (10-before) no images are loaded
-        for i in range(0, index-before):
-            self.assertIsNone( annotations[i].image, f"Image #{i} expected to be NOT None"  )
+        for i in range(0, index - before):
+            self.assertIsNone(
+                annotations[i].image, f"Image #{i} expected to be NOT None"
+            )
 
         # Test - that AFTER index (10 + after) no image is loaded
-        for i in range(index+after, len(annotations)):
-            self.assertIsNone( annotations[i].image, f"After image #{i} expected to be None"  )
+        for i in range(index + after, len(annotations)):
+            self.assertIsNone(
+                annotations[i].image, f"After image #{i} expected to be None"
+            )
 
 
 class TestAnnotatedImage(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the AnnotatedImage class"""
 
     async def test_scale_image_creates_scaled_image(self):
-        """ Ensure that scaling an image with a scale factor actually stores
-            the correctly scaled image and stores the scale itself.
+        """Ensure that scaling an image with a scale factor actually stores
+        the correctly scaled image and stores the scale itself.
         """
 
         # Setup
@@ -72,15 +76,14 @@ class TestAnnotatedImage(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(scale, sut.scale)
         self.assertIsNotNone(sut.scaledImage)
 
-        expectedWidth  = int(originalWidth * scale)
+        expectedWidth = int(originalWidth * scale)
         expectedHeight = int(originalHeight * scale)
-        self.assertEqual(expectedWidth, sut.scaledImage.width)   # type: ignore
-        self.assertEqual(expectedHeight, sut.scaledImage.height) # type: ignore
-
+        self.assertEqual(expectedWidth, sut.scaledImage.width)  # type: ignore
+        self.assertEqual(expectedHeight, sut.scaledImage.height)  # type: ignore
 
     async def test_set_image_to_None_clears_scaled_image_info(self):
-        """ When we set the image to None the scaled image info should also
-            be cleared
+        """When we set the image to None the scaled image info should also
+        be cleared
         """
 
         # Setup
@@ -100,10 +103,9 @@ class TestAnnotatedImage(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(0.0, sut.scale)
         self.assertIsNone(sut.scaledImage)
 
-
     async def test_scale_image_to_size_creates_scaled_image(self):
-        """ Scaling an image to a size correctly calculates the scale,
-            and then scales the image and stores the scale value
+        """Scaling an image to a size correctly calculates the scale,
+        and then scales the image and stores the scale value
         """
 
         # Setup
@@ -114,7 +116,7 @@ class TestAnnotatedImage(unittest.IsolatedAsyncioTestCase):
         originalHeight = sut.image.height
         expectedScale = 0.5
 
-        expectedWidth  = int(originalWidth * expectedScale)
+        expectedWidth = int(originalWidth * expectedScale)
 
         # Use a VERY large height so it doesn't impact our scale calculation
         # (which will try and keep the aspect ratio)
@@ -129,10 +131,9 @@ class TestAnnotatedImage(unittest.IsolatedAsyncioTestCase):
 
         # Calculate the expected height with the actual scale used
         expectedHeight = int(originalHeight * sut.scale)
-        self.assertEqual(expectedWidth, sut.scaledImage.width)   # type: ignore
-        self.assertAlmostEqual(expectedHeight, sut.scaledImage.height) # type: ignore
+        self.assertEqual(expectedWidth, sut.scaledImage.width)  # type: ignore
+        self.assertAlmostEqual(expectedHeight, sut.scaledImage.height)  # type: ignore
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

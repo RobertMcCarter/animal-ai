@@ -10,11 +10,11 @@ import os
 # First - load all the folders
 baseDir = r"D:\data\NRSI\2263B_Turtle-Nest-Mound"
 
-def getDirectories( baseDir:str ) -> list[str]:
-    """ Get the list of directories in the given baseDir directory
-    """
+
+def getDirectories(baseDir: str) -> list[str]:
+    """Get the list of directories in the given baseDir directory"""
     result: list[str] = []
-    filenames= os.listdir(baseDir)
+    filenames = os.listdir(baseDir)
     for filename in filenames:  # loop through all the files and folders
         fullPath = os.path.join(baseDir, filename)
         if os.path.isdir(fullPath):
@@ -22,20 +22,20 @@ def getDirectories( baseDir:str ) -> list[str]:
     return result
 
 
-def buildMapOfSubDirs(topLevelDirs: list[str]) -> dict[str,str]:
-    """ Scan through all the of the given "top level" directories, and find all of their
-        immediate sub-directories.
-        Returns a dictionary where each key is the name of the sub-directory,
-        and each value is the full file system path to that sub-directory.
+def buildMapOfSubDirs(topLevelDirs: list[str]) -> dict[str, str]:
+    """Scan through all the of the given "top level" directories, and find all of their
+    immediate sub-directories.
+    Returns a dictionary where each key is the name of the sub-directory,
+    and each value is the full file system path to that sub-directory.
     """
-    mapOfDirs: dict[str,str] = {}
+    mapOfDirs: dict[str, str] = {}
     for dir in topLevelDirs:
         path = os.path.join(baseDir, dir)
         subDirs = getDirectories(path)
         for subDir in subDirs:
-            fullPath:str = os.path.join(baseDir, dir, subDir)
+            fullPath: str = os.path.join(baseDir, dir, subDir)
             if mapOfDirs.get(subDir):
-                raise Exception("Found duplicate dir + sub-dir combination:" )
+                raise Exception("Found duplicate dir + sub-dir combination:")
             mapOfDirs[subDir] = fullPath
 
     return mapOfDirs
@@ -52,7 +52,7 @@ mapOfSubDirs = buildMapOfSubDirs(highLevelDirs)
 # Now load the original Excel file
 taggedImagesExcelFile = os.path.join(baseDir, "files.xlsx")
 df = pd.read_excel(taggedImagesExcelFile)
-df = df.replace(np.nan, '', regex=True)
+df = df.replace(np.nan, "", regex=True)
 
 count = 0
 missingFolders = set()
@@ -67,7 +67,7 @@ for i, row in df.iterrows():
         continue
 
     relativePath = str(row["RelativePath"])
-    if relativePath != '':
+    if relativePath != "":
         subDirPath = os.path.join(subDirPath, relativePath)
 
     file = str(row["File"])
@@ -80,6 +80,8 @@ for i, row in df.iterrows():
 
 
 numTaggedImages = len(taggedImagePaths)
-numMissingImages = count- numTaggedImages
-print(f"Found a total of {numTaggedImages} tagged images - out of {count} (missing {numMissingImages})")
+numMissingImages = count - numTaggedImages
+print(
+    f"Found a total of {numTaggedImages} tagged images - out of {count} (missing {numMissingImages})"
+)
 print(f"Failed to find {len(missingFolders)} data folders")

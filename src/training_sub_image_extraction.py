@@ -134,7 +134,9 @@ def main():
     """Process the main images `.json` data file to create 128x128 training sub-images."""
 
     # Load the list of animals from the animals JSON file
-    images_data_file: model.ImagesCollection = ds.loadAnimalsJson("animals.json")
+    images_data_file: model.ImagesCollection = ds.loadImagesCollectionFromJson(
+        "animals.json"
+    )
 
     # Group them
     image_groups: list[list[model.ImageInfo]] = grouping.groupImages(

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from .region2d import Region2d
 
+
 @dataclass(frozen=True)
 class ImageInfo:
     """Information about a particular image in our data set"""

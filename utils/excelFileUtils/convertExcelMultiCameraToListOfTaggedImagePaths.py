@@ -12,7 +12,7 @@ excelFileToValidate = os.path.join(baseFolder, r"taggedImages-summary.xlsx")
 
 # Load the Excel file with the file paths to validate
 df = pd.read_excel(excelFileToValidate, "RAM-Data")
-df = df.replace(np.nan, '', regex=True)
+df = df.replace(np.nan, "", regex=True)
 
 count = 0
 taggedImagePaths: list[str] = []
@@ -24,7 +24,7 @@ for i, row in df.iterrows():
     subFolder = str(row["Folder"])
     file = str(row["File"])
 
-    taggedImagePath:str = os.path.join(baseFolder, camera, subFolder, file)
+    taggedImagePath: str = os.path.join(baseFolder, camera, subFolder, file)
     if os.path.isfile(taggedImagePath):
         print(taggedImagePath)
         taggedImagePaths.append(taggedImagePath)
@@ -33,5 +33,7 @@ for i, row in df.iterrows():
 
 
 numTaggedImages = len(taggedImagePaths)
-numMissingImages = count- numTaggedImages
-print(f"Found a total of {numTaggedImages} tagged images - out of {count} (missing {numMissingImages})")
+numMissingImages = count - numTaggedImages
+print(
+    f"Found a total of {numTaggedImages} tagged images - out of {count} (missing {numMissingImages})"
+)
