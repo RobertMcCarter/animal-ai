@@ -1,10 +1,10 @@
 import csv
 
-def readTaggedAnimalsCsvFile( path:str ) -> list[list[str]]:
-    """ Read in the latset/greatest animals CSV file
-    """
+
+def readTaggedAnimalsCsvFile(path: str) -> list[list[str]]:
+    """Read in the latset/greatest animals CSV file"""
     rows: list[list[str]] = []
-    with open(path, 'r') as csvfile:
+    with open(path, "r") as csvfile:
         # create a csv reader object
         csvReader = csv.reader(csvfile)
 
@@ -34,5 +34,6 @@ def main():
     total = totalTagged + totalNotTagged
     print(f"Total tagged images: {totalTagged} - { totalTagged / total * 100}")
     print(f"Total Not tagged   : {totalNotTagged} - { totalNotTagged / total * 100}")
+
 
 main()
