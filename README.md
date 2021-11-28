@@ -216,7 +216,9 @@ The process I followed to get to a solution was long and circuitous...
 
    ![rabbit-rectangle-with-highlighted-no-rabbit-sub-squares](./docs/images/rabbit-with-blank-spaces.png)
 
-   So I ended up going back through all the tagged images and fixing up their tagged regions.
+   So I ended up going back through all the tagged images and fixing up their tagged regions;
+   a process that thankfully only took a few hours one evening while simultaneously listening
+   to an audio book.  :-)
 
    So the above rabbit - previously tagged with a single rectangle - is now tagged like this:
 
