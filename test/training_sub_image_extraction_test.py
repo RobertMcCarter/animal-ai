@@ -42,7 +42,6 @@ class CreateOutputFilePathTests(unittest.TestCase):
         )  # So we can test consistently on any platform
         self.assertEqual(result, expected)
 
-
     def test_file_name_with_rotation(self):
         # Setup
         x = 23
@@ -62,7 +61,6 @@ class CreateOutputFilePathTests(unittest.TestCase):
             "\\", "/"
         )  # So we can test consistently on any platform
         self.assertEqual(result, expected)
-
 
 
 if __name__ == "__main__":
