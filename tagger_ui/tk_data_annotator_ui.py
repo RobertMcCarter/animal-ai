@@ -2,14 +2,17 @@
 A Tkinter UI that allows me to scroll through the images and select regions on the images
 that should be tagged by the solution.
 """
+# pyright: reportUnknownVariableType=false, reportUnknownMemberType=false
+
 import os
 import tkinter as tk
 from tkinter import filedialog
 from typing import Union
 import threading
 
-import model
-import dataAccessLayer as dal
+import src.model as model
+import ui_model as uiModel
+import data_access_layer as dal
 
 # To understand weak references, please see:
 # https://docs.python.org/3.8/c-api/weakref.html
@@ -65,7 +68,7 @@ class DataAnnotatorUI:
     _root: tk.Tk
 
     @property
-    def current(self) -> Union[model.AnnotatedImage, None]:
+    def current(self) -> uiModel.AnnotatedImage | None:
         """The current annotated image view model"""
         if self._manager is None:
             return None
@@ -98,7 +101,7 @@ class DataAnnotatorUI:
     def _saveAnnotations(self):
         """Save the image annotations processed so far"""
         if self._manager is not None:
-            dal.saveAnnotatedImagesToJson(self._manager)
+            dal.saveAnnotatedImagesToJsonFile(self._manager.saveFileName, self._manager)
 
     def openJsonSaveFile(self, file: str):
         """Process all the images in the given file name"""
@@ -106,13 +109,13 @@ class DataAnnotatorUI:
         self._removeImageRegionRectangles()
 
         # Create annotated image objects for all the images in the selected file
-        self._manager = dal.loadImageListFromJsonFile(file)
+        self._manager = dal.loadAnnotatedImagesFromJsonFile(file)
         if self._manager:
             numImages = len(self._manager)
             print("Found: ", numImages, " images")
 
             self._manager.moveToImage(self._manager.maxViewed)
-            self._manager.onWindowResized(windowSize=self._canvasSize)
+            self._manager.onWindowResized(newWindowSize=self._canvasSize)
 
             self.moveToImage(self._manager.currentIndex)
 
@@ -125,10 +128,12 @@ class DataAnnotatorUI:
         self._removeImageRegionRectangles()
 
         # Create annotated image objects for all the images in the selected folder
-        self._manager = dal.loadDirectory(folder, self._canvasSize)
-        numImages = len(self._manager)
-        print("Found: ", numImages, " images")
-        self.moveToImage(self._manager.currentIndex)
+        self._manager = dal.loadDirectory(folder)
+        if self._manager is not None:
+            self._manager.onWindowResized(self._canvasSize)
+            numImages = len(self._manager)
+            print("Found: ", numImages, " images")
+            self.moveToImage(self._manager.currentIndex)
 
     def moveToNextImage(self):
         """Move to the next image"""
@@ -260,21 +265,24 @@ class DataAnnotatorUI:
             return
 
         activeRegion = self._manager.activeRegion
+        newRegion: model.Region2d | None = None
         if activeRegion is None:
             newRegion = model.Region2d(event.x, event.y, 1, 1)
 
         else:
             # We already have a rectangle, and we're dragging it
             currentRect = activeRegion.screenRegion
-            x = currentRect.x
-            y = currentRect.y
-            w = event.x - currentRect.x
-            h = event.y - currentRect.y
-            newRegion = model.Region2d(x, y, w, h)
+            if currentRect is not None:
+                x = currentRect.x
+                y = currentRect.y
+                w = event.x - currentRect.x
+                h = event.y - currentRect.y
+                newRegion = model.Region2d(x, y, w, h)
 
-        # Update the active region in the view model layer
-        activeRegion = self._manager.updateActiveScreenRegion(newRegion)
-        self._drawRegion(activeRegion, "blue")
+            # Update the active region in the view model layer
+            if newRegion is not None:
+                activeRegion = self._manager.updateActiveScreenRegion(newRegion)
+                self._drawRegion(activeRegion, "blue")
 
     def _onCanvasResize(self, event: tk.Event) -> None:  # type: ignore
         """Called when our image canvas Tk widget is resized.
@@ -306,6 +314,9 @@ class DataAnnotatorUI:
     def _redrawAllRectangles(self):
         """Draws the active region and the image regions"""
         # Draw all the active regions
+        if self._manager is None:
+            return
+
         for region in self._manager.regions:
             self._drawRegion(region, "pink")
 
@@ -331,39 +342,44 @@ class DataAnnotatorUI:
     def _removeActiveImageRegionRectangle(self):
         """Remove the current activate regions the user has currently drawn but not saved"""
         # Also remove the active region rectangle
+        if self._manager is None:
+            return
+
         activeRegion = self._manager.activeRegion
         if activeRegion:
             self._canvas.delete(activeRegion.canvasRectId)
             activeRegion.canvasRectId = 0
 
-    def _drawRegion(self, region: model.ScaledRegion2d, colour: str = "pink"):
+    def _drawRegion(self, region: uiModel.ScaledRegion2d, colour: str = "pink"):
         """Draw the given region view-model (which must have a `screenRegion` and `canvasRectId`
         property) on the screen with the given colour.
         """
         # Grab the screen coordinates we need to draw the selection rectangle
-        x1 = region.screenRegion.x
-        y1 = region.screenRegion.y
-        x2 = region.screenRegion.right_x
-        y2 = region.screenRegion.bottom_y
+        if region.screenRegion is not None:
+            x1 = region.screenRegion.x
+            y1 = region.screenRegion.y
+            x2 = region.screenRegion.right_x
+            y2 = region.screenRegion.bottom_y
 
-        if region.canvasRectId == 0:
-            # Create selection rectangle (invisible since corner points are equal).
-            region.canvasRectId = self._canvas.create_rectangle(
-                x1,
-                y1,
-                x2,
-                y2,  # type: ignore
-                width=5,
-                dash=(4, 4),
-                fill="",
-                outline=colour,
-            )
-        else:
-            # Just update the existing canvas rectangle
-            self._canvas.coords(region.canvasRectId, x1, y1, x2, y2)  # type: ignore
+            if region.canvasRectId == 0:
+                # Create selection rectangle (invisible since corner points are equal).
+                region.canvasRectId = self._canvas.create_rectangle(
+                    x1,
+                    y1,
+                    x2,
+                    y2,  # type: ignore
+                    width=5,
+                    dash=(4, 4),
+                    fill="",
+                    outline=colour,
+                )
+            else:
+                # Just update the existing canvas rectangle
+                self._canvas.coords(region.canvasRectId, x1, y1, x2, y2)  # type: ignore
 
     def _updateImage(self):
         """Sets or updates the image on the TK Canvas"""
+        assert self._manager
         assert self._manager.current
 
         tkImage = self._manager.current.tkScaledImage
@@ -429,7 +445,7 @@ class DataAnnotatorUI:
     # ##############################################################################################
 
     # The collection of annotated images we need to process for our test set
-    _manager: Union[model.AnnotatedImagesManager, None] = None
+    _manager: uiModel.AnnotatedImagesManager | None = None
 
     # The Canvas object that we use to show the image
     _canvas: tk.Canvas

@@ -127,9 +127,7 @@ def loadDirectoryFromFiles(directory: str) -> uiModel.AnnotatedImagesManager:
     return manager
 
 
-def loadDirectory(
-    directory: str, windowSize: uiModel.Size2d
-) -> uiModel.AnnotatedImagesManager:
+def loadDirectory(directory: str) -> uiModel.AnnotatedImagesManager:
     """Return an annotated images manager,
     loaded with the images from the given directory
     """
@@ -137,14 +135,12 @@ def loadDirectory(
 
     # First, try and load the directory using any previously saved JSON file
     jsonDirFileName: str = os.path.join(directory, DIR_ANNOTATIONS_FILE_NAME)
-    manager = loadImageCollectionJsonFile(jsonDirFileName, windowSize)
+    manager = loadAnnotatedImagesFromJsonFile(jsonDirFileName)
     if manager is not None:
         return manager
 
     # If that didn't work, load the images directly from the list of images
     manager = loadDirectoryFromFiles(directory)
-    if manager is not None:
-        manager.onWindowResized(windowSize)
     return manager
 
 
