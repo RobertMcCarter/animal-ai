@@ -101,12 +101,17 @@ class AnnotatedImage:
                 self.image = Image.open(self.filePath)
                 self.image.load()
 
+    def clearAllRegions(self) -> None:
+        """Clear all the regions from this annotated image"""
+        self.isTagged = False
+        self._regions.clear()
+
     def addRegion(self, region: ScaledRegion2d) -> Tuple[int, ScaledRegion2d]:
         """Add a new region to this annotated image"""
         # With the image region we can now create a scaled region and add it to our collection
         indexOfNewRegion = len(self._regions)
         self._regions.append(region)
-
+        self.isTagged = True
         return (indexOfNewRegion, region)
 
     def scaleImage(self, scale: float) -> Image.Image:
