@@ -140,8 +140,7 @@ class AnnotatedImage:
 
         # Okay, now we can scale the image
         scale = calculateImageScale(self.image, targetSize)
-        with Timer("scaling image"):
-            self.scaleImage(scale)
+        self.scaleImage(scale)
 
         # We now need to re-scale selected regions
         for region in self._regions:
@@ -152,8 +151,7 @@ class AnnotatedImage:
     def wrapImageForTk(self) -> None:
         """Wrap the underlying scaled image in a Tk PhotoImage for use by the Tk UI layer"""
         assert self.scaledImage
-        with Timer("wrapping image"):
-            self._currentTkImage = ImageTk.PhotoImage(self.scaledImage)  # type: ignore
+        self._currentTkImage = ImageTk.PhotoImage(self.scaledImage)  # type: ignore
 
     # The current TK version of _currentImage
     # VERY IMPORTANT - Python doesn't know that TKinter will hold on to this!

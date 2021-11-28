@@ -178,9 +178,8 @@ class AnnotatedImagesManager:
 
         # Ensure the image is loaded
         if self.current.image is None:
-            with Timer("loading image"):
-                self.current.image = Image.open(self.current.filePath)
-                self.current.image.load()
+            self.current.image = Image.open(self.current.filePath)
+            self.current.image.load()
 
         # Scale the image so it fits while retaining the correct aspect ratio
         # Only scale if we haven't already previously scaled the image (which is slow)
