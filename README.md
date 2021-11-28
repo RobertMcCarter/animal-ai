@@ -134,7 +134,10 @@ The process I followed to get to a solution was long and circuitous...
    For this I built a small image tagging utility with Tcl/Tk (which I used back in university)
    and [Tkinter](https://docs.python.org/3/library/tk.html).
 
-   The UI is incredibly minimal, with a focus on keyboard shortcuts rather than a complex UI.
+   ![my-custom-tcl-tk-image-tagger-ui](./docs/images/image-data-annotator-tool.png)
+
+   As you can see in the above screenshot, the UI is incredibly minimal,
+   with a focus instead on quick keyboard shortcuts rather than a complex UI.
 
    However, I quickly realized how long it was going to take to process 10,000s of images!
 
@@ -142,8 +145,6 @@ The process I followed to get to a solution was long and circuitous...
    every 0.5 seconds it moves to the next image.  If I see something interesting I can use the
    arrow keys to stop the auto-scan and manually move left and right between images,
    using the mouse to tag the animal within the image:
-
-   ![my-custom-tcl-tk-image-tagger-ui](./docs/images/image-data-annotator-tool.png)
 
    However, many folders contain 10,000 images, which was still taking hours to process.
 
@@ -167,7 +168,7 @@ The process I followed to get to a solution was long and circuitous...
    so I wrote [`addSurroundingImages.py`](./utils/addSurroundingImages.py) to expand
    on the CSV file with those additional images.
 
-   Going through these additional images with the tagging UI tool it became apparent that the
+   Going through these additional images with the tagging UI tool it was clear that the
    NRSI tagging data was not complete.  They only recorded one image for a particular animal,
    even if that animal was in multiple photographs (either before or after the image that
    NRSI had tagged in the Excel file).
@@ -201,17 +202,17 @@ The process I followed to get to a solution was long and circuitous...
 5. Fixing my data tagging error
 
    Unfortunately, reviewing the generated delta sub-images from the previous step,
-   it quickly became apparently that a number of positively tagged sub-images looked exactly
-   like the negatively tagged delta sub-images.
+   it was clear that a number of positively tagged sub-images looked exactly like the negatively
+   tagged delta sub-images.
 
    The reason quickly became apparent:  I had used a single rectangle to tag most animals,
-   and due to the animal's position that rectangle often included a significant amount of the
+   and due to the animal's position that rectangle frequently included a significant amount of the
    picture that did NOT include the animal.
 
    For example, I had previously tagged the following rabbit with a single rectangle.
    However, breaking up this rabbit rectangle into 128x128 sub-images included the three red
    sub-images, which clearly don't include any rabbit and whose delta with the previous frame
-   was obviously exactly like a negatively tagged delta sub-image:
+   was thus exactly like a negatively tagged delta sub-image:
 
    ![rabbit-rectangle-with-highlighted-no-rabbit-sub-squares](./docs/images/rabbit-with-blank-spaces.png)
 
