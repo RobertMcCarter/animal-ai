@@ -42,9 +42,9 @@ I had several personal goals as well:
    * [Tkinter](https://docs.python.org/3/library/tk.html)
 
 I played around with and initially had very high hopes for [Kivy](https://kivy.org/) as a Python
-UI tool, but found the Kivy API to be poorly organized and shocking more difficult to use than
+UI tool, but found the Kivy API to be poorly organized and more difficult to use than
 plain old Tcl/TK with Tkinter.   I had built the initial Tkinter tool in a few days,
-but really struggled to replicate the functionality with Kivy.  This likely was due to my
+but really struggled to replicate the functionality with Kivy.  This was likely due to my
 requirements to draw custom rectangles overlaid on the image - which didn't seem to work well with
 Kivy's higher-level component approach.  But perhaps I just didn't give it enough time.
 
