@@ -69,7 +69,7 @@ detection solution with this set of images:
   the rabbit (top right if you can't find it) is leaving the washed out frame,
   providing a very odd angle to the camera.
 
-  ![unphotogenic-rabbit](./docs/images/rabbit-leaving-the-frame.png)
+  ![un-photogenic-rabbit](./docs/images/rabbit-leaving-the-frame.png)
 
 * Some of the cameras were positioned sideways or upside down.
   However, the camera is smart enough to realize this and adjust.
@@ -83,7 +83,7 @@ detection solution with this set of images:
 
   ![cant-rotate-the-images](./docs/images/stealth-cam-orientation.png)
 
-* A huge percentage of the pictures are taken in the dark (like the two exmaple images above),
+* A huge percentage of the pictures are taken in the dark (like the two examples above),
   so images are the classic infrared grey-scale images, and are frequently washed out
   (sometimes it is hard to tell where the background ends and the animal starts)
   with bright reflections from the eyes, etc. (there is an example of such an image father down).
@@ -211,7 +211,7 @@ The process I followed to get to a solution was long and circuitous...
    For example, I had previously tagged the following rabbit with a single rectangle.
    However, breaking up this rabbit rectangle into 128x128 sub-images included the three red
    sub-images, which clearly don't include any rabbit and whose delta with the previous frame
-   was obviously exactly like a negatively tagged detla sub-image:
+   was obviously exactly like a negatively tagged delta sub-image:
 
    ![rabbit-rectangle-with-highlighted-no-rabbit-sub-squares](./docs/images/rabbit-with-blank-spaces.png)
 
