@@ -84,7 +84,7 @@ class AnnotatedImage:
         return self._regions
 
     # Indicates if this image has been tagged as having an animal in it
-    isTagged: bool
+    isTagged: bool = False
 
     @property
     def tkScaledImage(self) -> PhotoImage:

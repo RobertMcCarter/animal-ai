@@ -18,56 +18,84 @@ DIR_ANNOTATIONS_FILE_NAME = "__annotations.json"
 # #################################################################################################
 
 
-def convertImageInfoToViewModel(imageInfo: model.ImageInfo) -> uiModel.AnnotatedImage:
+def convertImageInfoToAnnotatedImage(
+    image_info: model.ImageInfo,
+) -> uiModel.AnnotatedImage:
     """Convert an image info object into a view model AnnotatedImage object"""
-    assert imageInfo
-    result = uiModel.AnnotatedImage(imageInfo.filePath)
-    result.isTagged = imageInfo.tagged
-    for region in imageInfo.regions:
+    assert image_info
+
+    result = uiModel.AnnotatedImage(image_info.filePath)
+    result.isTagged = image_info.tagged
+    for region in image_info.regions:
         scaledRegion = uiModel.ScaledRegion2d(None, region)
         result.addRegion(scaledRegion)
     return result
 
 
-def convertImagesCollectionToViewModel(
+def convertAnnotatedImageToImageInfo(ai: uiModel.AnnotatedImage) -> model.ImageInfo:
+    """Convert an AnnotatedImage object into a core model ImageInfo object for saving"""
+    assert ai
+
+    regions: list[model.Region2d] = [
+        r.imageRegion for r in ai.regions if r.imageRegion is not None
+    ]
+    result = model.ImageInfo(ai.isTagged, ai.filePath, regions)
+    return result
+
+
+def convertImagesCollectionToAnnotatedImagesManager(
     collection: model.ImagesCollection,
 ) -> uiModel.AnnotatedImagesManager:
     """Convert a core model images collection into the view model layer
     annotated images manager (which has more logic for our particular UI)
     """
     assert collection
-    annotatedImages = [convertImageInfoToViewModel(info) for info in collection.images]
+
+    annotatedImages = [
+        convertImageInfoToAnnotatedImage(info) for info in collection.images
+    ]
     manager = uiModel.AnnotatedImagesManager(annotatedImages)
     manager.maxViewed = collection.maxViewed
     return manager
 
 
-def loadImageCollectionJsonFile(
-    file_name: str, windowSize: uiModel.Size2d
-) -> uiModel.AnnotatedImagesManager | None:
-    """Loads the given json file (if it doesn't exist, this function returns None)
+def convertAnnotatedImagesManagerToImagesCollection(
+    manager: uiModel.AnnotatedImagesManager,
+) -> model.ImagesCollection:
+    """Convert a UI annotated images manager into a core model images collection for saving"""
+    assert manager
 
-    NOTE:  This function can ONLY be called if there is a main Tk window created.
-    (which makes it hard to unit test)
-    """
-    # Check pre-conditions
+    images = [convertAnnotatedImageToImageInfo(i) for i in manager.images]
+    collection = model.ImagesCollection(manager.maxViewed, images)
+    return collection
+
+
+def saveAnnotatedImagesToJsonFile(
+    file_name: str, manager: uiModel.AnnotatedImagesManager
+) -> None:
+    """Saves the given collection of annotated images to the same"""
+    assert manager
+    assert file_name
+
+    collection = convertAnnotatedImagesManagerToImagesCollection(manager)
+    json_serializer.saveImagesCollectionToJson(file_name, collection)
+
+
+def loadAnnotatedImagesFromJsonFile(
+    file_name: str,
+) -> uiModel.AnnotatedImagesManager:
+    """Loads the given json file (if it doesn't exist, this function returns None)"""
     assert file_name
     exists: bool = os.path.isfile(file_name)
     if not exists:
-        return None
+        raise FileNotFoundError()
 
     # The .json file exists, so we'll try and load it into a
     # view model style annotated images manager
-    try:
-        collection = json_serializer.loadImagesCollectionFromJson(file_name)
-        manager = convertImagesCollectionToViewModel(collection)
-        manager.moveToImage(manager.maxViewed)  # Requires a Tk window!
-        manager.saveFileName = file_name
-        manager.onWindowResized(windowSize)     # Also requires a Tk window!
-        return manager
-    except Exception as e:
-        print("Failed to read JSON file:" + str(e))
-        return None
+    collection = json_serializer.loadImagesCollectionFromJson(file_name)
+    manager = convertImagesCollectionToAnnotatedImagesManager(collection)
+    manager.saveFileName = file_name
+    return manager
 
 
 def createAnnotatedImagesFromDirectory(directory: str) -> list[uiModel.AnnotatedImage]:

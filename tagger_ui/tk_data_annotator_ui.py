@@ -106,10 +106,14 @@ class DataAnnotatorUI:
         self._removeImageRegionRectangles()
 
         # Create annotated image objects for all the images in the selected file
-        self._manager = dal.loadImageListFromJsonFile(file, self._canvasSize)
+        self._manager = dal.loadImageListFromJsonFile(file)
         if self._manager:
             numImages = len(self._manager)
             print("Found: ", numImages, " images")
+
+            self._manager.moveToImage(self._manager.maxViewed)
+            self._manager.onWindowResized(windowSize=self._canvasSize)
+
             self.moveToImage(self._manager.currentIndex)
 
     def openFolder(self, folder: str):
