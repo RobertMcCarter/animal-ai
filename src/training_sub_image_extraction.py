@@ -1,4 +1,8 @@
-import cv2 as cv
+#!python
+# pyright: reportUnknownVariableType=false, reportUnknownMemberType=false
+from dataclasses import dataclass
+import cv2
+import random
 import os
 from PIL import Image as pilImage
 import piexif
@@ -9,8 +13,9 @@ from src import model
 from src import data_serialization_json as ds
 from src import grouping
 from src import sub_image_regions as sir
+from tagger_ui.ui_model.timer import Timer
 
-print(f"OpenCV version: {cv.__version__}")
+print(f"OpenCV version: {cv2.__version__}")
 
 
 # The image dimensions that we'll produce for training an AI
@@ -20,7 +25,7 @@ BLOCK_SIZE = model.Size2d(IMAGE_WIDTH, IMAGE_HEIGHT)
 
 
 def createOutputFilePath(
-    output_folder: str,
+    out_dir: str,
     image_info: model.ImageInfo,
     region: model.TaggedRegion2d,
     rotation: str = "",
@@ -28,7 +33,7 @@ def createOutputFilePath(
     """Creates the complete output file path for the given tagged region
 
     Args:
-        output_folder (str): The output folder where we want to save the sub-images
+        out_dir (str): The output folder where we want to save the sub-images
         image_info (model.ImageInfo): The original input image
         region (model.TaggedRegion): The tag result
 
@@ -46,7 +51,7 @@ def createOutputFilePath(
     if rotation:
         rotation = "_" + rotation
     dest_file_name = f"{path.stem}_@{x}x{y}{rotation}{path.suffix}"
-    result = os.path.join(output_folder, sub_folder, dest_file_name)
+    result = os.path.join(out_dir, sub_folder, dest_file_name)
     return result
 
 
@@ -56,7 +61,7 @@ SaveSubImageFn = Callable[[str, model.ImageInfo, model.TaggedRegion2d, Any], Non
 
 
 def saveTaggedSubImage(
-    output_folder: str,
+    out_dir: str,
     image_info: model.ImageInfo,
     region: model.TaggedRegion2d,
     sub_image: Any,
@@ -66,17 +71,17 @@ def saveTaggedSubImage(
     to increase the number of positively tagged images.
 
     Args:
-        output_folder (str): The top-level output folder
+        out_dir (str): The top-level output folder
         image_info (model.ImageInfo): The original large image information
         region (model.TaggedRegion): The tagged information about the sub-image being saved
         sub_image (Any): The actual sub-image data
     """
-    output_file = createOutputFilePath(output_folder, image_info, region)
-    cv.imwrite(output_file, sub_image)
+    output_file = createOutputFilePath(out_dir, image_info, region)
+    cv2.imwrite(output_file, sub_image)
 
 
 def saveUntaggedSubImage(
-    output_folder: str,
+    out_dir: str,
     image_info: model.ImageInfo,
     region: model.TaggedRegion2d,
     sub_image: Any,
@@ -86,13 +91,13 @@ def saveUntaggedSubImage(
     to increase the number of positively tagged images.
 
     Args:
-        output_folder (str): The top-level output folder
+        out_dir (str): The top-level output folder
         image_info (model.ImageInfo): The original large image information
         region (model.TaggedRegion): The tagged information about the sub-image being saved
         sub_image (Any): The actual sub-image data
     """
-    output_file = createOutputFilePath(output_folder, image_info, region)
-    cv.imwrite(output_file, sub_image)
+    output_file = createOutputFilePath(out_dir, image_info, region)
+    cv2.imwrite(output_file, sub_image)
 
 
 def create_image_exif_metadata(image_info: model.ImageInfo) -> bytes:
@@ -135,6 +140,113 @@ def create_directory(dir: str) -> None:
         os.makedirs(dir)
 
 
+@dataclass(frozen=True)
+class OutputImageInfo:
+    """The required information to save a resulting sub-image"""
+
+    out_dir: str
+    image_info: model.ImageInfo
+    sub_region: model.TaggedRegion2d
+
+
+def save_sub_image(
+    output_info: OutputImageInfo, sub_image_diff: Any, rotation: str = ""
+) -> None:
+    """Saves a sub-image
+
+    Args:
+        out_dir (str): The top-level output folder where we're saving all sub-images
+        image_info (model.ImageInfo): The original main image information (for the file name)
+        sub_region (model.TaggedRegion2d): The tagged region within the main image where
+            this sub-image is being taken from
+        sub_image_diff (Any): The actual sub-image pre-calculated diff to save
+        rotation (str): The optional rotational information for the output file name
+    """
+    assert output_info
+
+    # Determine which folder to save the file in
+    output_file = createOutputFilePath(
+        output_info.out_dir, output_info.image_info, output_info.sub_region, rotation
+    )
+
+    # Create the image metadata (which contains the original image source file path)
+    exif_metadata_bytes = create_image_exif_metadata(output_info.image_info)
+
+    # Create a PIL/Pillow image from our OpenCV2 image (so that we can save it with metadata)
+    pillow_image = pilImage.fromarray(sub_image_diff)
+    pillow_image.save(output_file, format="JPEG", exif=exif_metadata_bytes)
+    # cv2.imwrite(output_file, sub_image_diff)   # Can't save metadata with OpenCV2
+
+
+def save_sub_image_tagged_true(
+    output_info: OutputImageInfo, sub_image_diff: Any
+) -> None:
+    """
+    Saves a positively (true) tagged sub-image.
+    To generate more positive examples this function also saves copies of the sub-region
+    flipped and roated in various ways.
+
+    See:
+        https://note.nkmk.me/en/python-opencv-numpy-rotate-flip
+
+    Args:
+        out_dir (str): The top-level output folder where we're saving all sub-images
+        image_info (model.ImageInfo): The original main image information (for the file name)
+        sub_region (model.TaggedRegion2d): The tagged region within the main image where
+            this sub-image is being taken from
+        sub_image_diff (Any): The actual sub-image pre-calculated diff to save
+    """
+    # First save the original image
+    save_sub_image(output_info, sub_image_diff)
+
+    # Rotate the image 90° clockwise
+    img_rotate_90_c = cv2.rotate(sub_image_diff, cv2.ROTATE_90_CLOCKWISE)
+    save_sub_image(output_info, img_rotate_90_c, "rotate_90°c")
+
+    # Rotate the image 90° counter-clockwise
+    img_rotate_90_cc = cv2.rotate(sub_image_diff, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    save_sub_image(output_info, img_rotate_90_cc, "rotate_90°cc")
+
+    # Same as flipping in both x and y axis
+    # img_rotate_180 = cv2.rotate(sub_image_diff, cv2.ROTATE_180)
+    # save_sub_image(output_info, img_rotate_180, "rotate_180°")
+
+    # Flip the image along the x axis
+    img_flip_x = cv2.flip(sub_image_diff, 1)  # > 0 is flip horizontally
+    save_sub_image(output_info, img_flip_x, "flipped_x")
+
+    # Flip the image along the y axis
+    img_flip_y = cv2.flip(sub_image_diff, 0)  # = 0 is flip vertically
+    save_sub_image(output_info, img_flip_y, "flipped_y")
+
+    # Flip the image along both the x and y axis
+    img_flip_xy = cv2.flip(sub_image_diff, -1)  # < 0 is flip both x and y
+    save_sub_image(output_info, img_flip_xy, "flipped_xy")
+
+
+def save_sub_image_tagged_false(
+    output_info: OutputImageInfo,
+    sub_image_diff: Any,
+) -> None:
+    """
+    Saves a positively (true) tagged sub-image.
+    To generate fewer negative examples for AI training this function may or may not
+    save the given sub-image.
+
+    Currently it only has a 7.5% chance of actually saving the negative example
+
+    Args:
+        out_dir (str): The top-level output folder where we're saving all sub-images
+        image_info (model.ImageInfo): The original main image information (for the file name)
+        sub_region (model.TaggedRegion2d): The tagged region within the main image where
+            this sub-image is being taken from
+        sub_image_diff (Any): The actual sub-image pre-calculated diff to save
+    """
+    value: float = random.random()
+    if value < 0.075:
+        save_sub_image(output_info, sub_image_diff)
+
+
 def main():
     """Process the main images `.json` data file to create 128x128 training sub-images."""
 
@@ -149,21 +261,21 @@ def main():
     )
 
     # Where we will save the 128x128 training images - create true/false sub dirs if required
-    output_folder = r"D:\data\NRSI\__ai_training_images"
-    print("Output folder: ", output_folder)
-    create_directory(os.path.join(output_folder, "true"))
-    create_directory(os.path.join(output_folder, "false"))
+    out_dir = r"D:\data\NRSI\__ai_training_images"
+    print("Output folder: ", out_dir)
+    create_directory(os.path.join(out_dir, "true"))
+    create_directory(os.path.join(out_dir, "false"))
 
     # For every group
     group_count = 0
     for animal_group in image_groups:
         # For each group we want to track the previous
         group_count += 1
-        print("Group #", group_count)
+        print(f"Group #{group_count} of {len(image_groups)}")
         previous_image: Any | None = None
         for image_info in animal_group:
             # Load the image and grab its dimensions
-            current_image: Any = cv.imread(image_info.filePath)
+            current_image: Any = cv2.imread(image_info.filePath)
             height, width = current_image.shape[0], current_image.shape[1]
             image_size = model.Size2d(width, height)
 
@@ -199,22 +311,16 @@ def main():
                     sub_region.y1 : sub_region.y2, sub_region.x1 : sub_region.x2
                 ]
 
-                # Determine which folder to save the file in
-                output_file = createOutputFilePath(
-                    output_folder, image_info, sub_region
-                )
-
-                # Create the image metadata (which contains the original image source file path)
-                exif_metadata_bytes = create_image_exif_metadata(image_info)
-
-                # Create a PIL/Pillow image from our OpenCV2 image (so that we can save it with metadata)
-                pillow_image = pilImage.fromarray(sub_image_diff)
-                pillow_image.save(output_file, format="JPEG", exif=exif_metadata_bytes)
-                # cv.imwrite(output_file, sub_image_diff)   # Can't save metadata with OpenCV2
+                output_info = OutputImageInfo(out_dir, image_info, sub_region)
+                if sub_region.tag:
+                    save_sub_image_tagged_true(output_info, sub_image_diff)
+                else:
+                    save_sub_image_tagged_false(output_info, sub_image_diff)
 
             # Update the previous image for the next image subtraction
             previous_image = current_image
 
 
 if __name__ == "__main__":
-    main()
+    with Timer("Extract tagged sub-images"):
+        main()
