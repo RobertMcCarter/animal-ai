@@ -20,7 +20,10 @@ BLOCK_SIZE = model.Size2d(IMAGE_WIDTH, IMAGE_HEIGHT)
 
 
 def createOutputFilePath(
-    output_folder: str, image_info: model.ImageInfo, region: model.TaggedRegion2d
+    output_folder: str,
+    image_info: model.ImageInfo,
+    region: model.TaggedRegion2d,
+    rotation: str = "",
 ) -> str:
     """Creates the complete output file path for the given tagged region
 
@@ -40,7 +43,9 @@ def createOutputFilePath(
     y = str(region.y).zfill(4)
 
     # Now we can build the complete output file path (including the file name and ext)
-    dest_file_name = f"{path.stem}_@{x}x{y}{path.suffix}"
+    if rotation:
+        rotation = "_" + rotation
+    dest_file_name = f"{path.stem}_@{x}x{y}{rotation}{path.suffix}"
     result = os.path.join(output_folder, sub_folder, dest_file_name)
     return result
 

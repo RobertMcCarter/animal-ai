@@ -364,7 +364,6 @@ class DataAnnotatorUI:
         if self._manager is not None:
             self._manager.activeRegion = None
 
-
     def _removeActiveImageRegionRectangle(self):
         """Remove the current activate regions the user has currently drawn but not saved"""
         # Also remove the active region rectangle
