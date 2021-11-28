@@ -66,7 +66,7 @@ def convertAnnotatedImagesManagerToImagesCollection(
     assert manager
 
     images = [convertAnnotatedImageToImageInfo(i) for i in manager.images]
-    collection = model.ImagesCollection(manager.maxViewed, images)
+    collection = model.ImagesCollection(manager.maxViewed, manager.currentIndex, images)
     return collection
 
 
@@ -83,7 +83,7 @@ def saveAnnotatedImagesToJsonFile(
 
 def loadAnnotatedImagesFromJsonFile(
     file_name: str,
-) -> uiModel.AnnotatedImagesManager:
+) -> tuple[uiModel.AnnotatedImagesManager, int]:
     """Loads the given json file (if it doesn't exist, this function returns None)"""
     assert file_name
     exists: bool = os.path.isfile(file_name)
@@ -95,7 +95,7 @@ def loadAnnotatedImagesFromJsonFile(
     collection = json_serializer.loadImagesCollectionFromJson(file_name)
     manager = convertImagesCollectionToAnnotatedImagesManager(collection)
     manager.saveFileName = file_name
-    return manager
+    return (manager, collection.currentIndex)
 
 
 def createAnnotatedImagesFromDirectory(directory: str) -> list[uiModel.AnnotatedImage]:

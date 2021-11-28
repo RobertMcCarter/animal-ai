@@ -109,12 +109,12 @@ class DataAnnotatorUI:
         self._removeImageRegionRectangles()
 
         # Create annotated image objects for all the images in the selected file
-        self._manager = dal.loadAnnotatedImagesFromJsonFile(file)
+        (self._manager, lastIndex) = dal.loadAnnotatedImagesFromJsonFile(file)
         if self._manager:
             numImages = len(self._manager)
             print("Found: ", numImages, " images")
 
-            self._manager.moveToImage(self._manager.maxViewed)
+            self._manager.moveToImage(lastIndex)
             self._manager.onWindowResized(newWindowSize=self._canvasSize)
 
             self.moveToImage(self._manager.currentIndex)
@@ -231,11 +231,28 @@ class DataAnnotatorUI:
             else:
                 self._stopAutoMoveTimer()
 
+        # Delete - remove all the rectangle selections on the current image
+        if event.keysym == "Delete":
+            self._stopAutoMoveTimer()
+
+            # Clear the current active rectangle (if there is one)
+            self._removeActiveImageRegion()
+
+            # Next, remove the existing rectangles from the screen
+            self._removeImageRegionRectangles()  # Clear out existing canvas IDs
+
+            # NOW we can clear all the current image's regions
+            self._manager.current.regions.clear()
+
+            # Save the new region
+            if self._manager:
+                self._saveAnnotations()
+            return
+
         # Escape - remove current active rectangle selection
         if event.keysym == "Escape":
             self._stopAutoMoveTimer()
-            self._removeActiveImageRegionRectangle()
-            self._manager.activeRegion = None
+            self._removeActiveImageRegion()
             return
 
         # Save the current active region
@@ -318,7 +335,7 @@ class DataAnnotatorUI:
             return
 
         for region in self._manager.regions:
-            self._drawRegion(region, "pink")
+            self._drawRegion(region, "red")
 
         # Now (re)draw the active rectangle (if there is one)
         activeRegion = self._manager.activeRegion
@@ -339,6 +356,15 @@ class DataAnnotatorUI:
         # Also remove the active region rectangle
         self._removeActiveImageRegionRectangle()
 
+    def _removeActiveImageRegion(self):
+        """Remove the current activate regions the user has currently drawn but not saved"""
+        self._removeActiveImageRegionRectangle()
+
+        # Also tell the manager there's no active region
+        if self._manager is not None:
+            self._manager.activeRegion = None
+
+
     def _removeActiveImageRegionRectangle(self):
         """Remove the current activate regions the user has currently drawn but not saved"""
         # Also remove the active region rectangle
@@ -350,7 +376,7 @@ class DataAnnotatorUI:
             self._canvas.delete(activeRegion.canvasRectId)
             activeRegion.canvasRectId = 0
 
-    def _drawRegion(self, region: uiModel.ScaledRegion2d, colour: str = "pink"):
+    def _drawRegion(self, region: uiModel.ScaledRegion2d, colour: str = "red"):
         """Draw the given region view-model (which must have a `screenRegion` and `canvasRectId`
         property) on the screen with the given colour.
         """
@@ -467,7 +493,7 @@ class DataAnnotatorUI:
 
 
 # cspell: disable-next-line
-JSON_FILE = r"D:\dev\workspaces-ai\animal-ai\animals.json"
+JSON_FILE = r"D:\dev\workspaces-ai\jennifer\animal-ai\animals.json"
 # TEST_FOLDER = r"D:\data\NRSI\2263B_Turtle-Nest-Mound\2263B_TM Week 2_2020_06_05\NRSI_2263B-TM14-2020-06-03_SEH\100STLTH"
 if __name__ == "__main__":
     app = DataAnnotatorUI()

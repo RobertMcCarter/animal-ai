@@ -17,4 +17,5 @@ class ImagesCollection:
     """The information stored in the `animals.json` file, including metadata"""
 
     maxViewed: int
+    currentIndex: int
     images: list[ImageInfo]

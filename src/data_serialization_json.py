@@ -28,7 +28,13 @@ def deSerializeImageInfo(dict: dict[str, Any]) -> model.ImageInfo:
 def deSerializeImagesInfo(dict: dict[str, Any]) -> model.ImagesCollection:
     """Serialize a JSON dictionary back into the top-level ImagesInfo object."""
     assert dict
-    return model.ImagesCollection(maxViewed=dict["maxViewed"], images=dict["images"])
+
+    currentIndex = dict["currentIndex"] if "currentIndex" in dict else 0
+    return model.ImagesCollection(
+        maxViewed=dict["maxViewed"],
+        currentIndex=currentIndex,
+        images=dict["images"],
+    )
 
 
 def loadImagesCollectionFromJson(file_name: str) -> model.ImagesCollection:
@@ -88,6 +94,7 @@ def deSerializeImageCollection(collection: model.ImagesCollection) -> dict[str, 
     assert collection
     return {
         "maxViewed": collection.maxViewed,
+        "currentIndex": collection.currentIndex,
         "images": [
             serializeImageInfoToDict(i) for i in collection.images if i is not None
         ],

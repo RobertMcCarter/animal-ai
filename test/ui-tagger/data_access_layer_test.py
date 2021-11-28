@@ -144,7 +144,10 @@ class TestConvertImagesCollectionToAnnoatedImageManager(
         images = [imageInfo1, imageInfo2, imageInfo3]
 
         expectedMaxViewed = 2
-        collection = model.ImagesCollection(expectedMaxViewed, images)
+        expectedCurrentlyViewed = 1
+        collection = model.ImagesCollection(
+            expectedMaxViewed, expectedCurrentlyViewed, images
+        )
 
         # Act
         result = sut.convertImagesCollectionToAnnotatedImagesManager(collection)
@@ -233,7 +236,7 @@ class AnnotatedImageSerialization(TestingAnnotatedImagesDeSerialization):
         _, file_name = tempfile.mkstemp(suffix=".json")
         try:
             sut.saveAnnotatedImagesToJsonFile(file_name, manager)
-            result = sut.loadAnnotatedImagesFromJsonFile(file_name)
+            (result, _) = sut.loadAnnotatedImagesFromJsonFile(file_name)
 
             # Test
             self.assertEqual(expectedMaxViewed, result.maxViewed)
