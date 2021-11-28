@@ -5,7 +5,7 @@ from typing import Union
 def getTestDataFolder() -> str:
     """Figure out where our test data is located"""
     baseDir = os.path.dirname(os.path.abspath(__file__))
-    print("Base dir: ", baseDir)
+    # print("Base dir: ", baseDir)
     testDataDir = os.path.join(baseDir, "test-data")
     return testDataDir
 

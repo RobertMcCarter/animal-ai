@@ -4,6 +4,8 @@ install:
 		pipenv install
 
 format:
+	# Use black (https://black.readthedocs.io/en/stable/)
+	# to format the code according to PEP 8
 	black src/*.py       src/**/*.py \
 	      test/*.py      test/**/*.py \
 		  tagger_ui/*.py tagger_ui/**/*.py \
@@ -14,11 +16,16 @@ lint:
 	#lint Dockerfile
 	#docker run --rm -i hadolint/hadolint < Dockerfile
 
-test:
-	# See: https://docs.pytest.org/en/6.2.x/
-	python -m pytest -vv --cov=src src/*_test.py
+unittest:
+	# Run all of the unit tests
+	python -m unittest discover --verbose --start-directory ./test/ --pattern *_test.py
 
-run:
+tagui:
+	# Run the Python UI for tagging and selecting regions in the images
+	python tagger_ui/tk_data_annotator_ui.py
+
+imageex:
+	# Run the Python tool for extracting true/false tagged images from the animals.json data file
 	python src/training_sub_image_extraction.py
 
 all: install lint test
