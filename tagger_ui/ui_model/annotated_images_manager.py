@@ -7,7 +7,6 @@ from PIL import Image
 
 from .annotated_image import AnnotatedImage
 from .scaled_region2d import ScaledRegion2d
-from .timer import Timer
 
 from src.model import Size2d, Region2d
 
@@ -152,7 +151,7 @@ class AnnotatedImagesManager:
             if self.activeRegion:
                 self.activeRegion.updateScreenFromImage(scale)
 
-    def scanForTaggedIndex(self, direction: int) -> int | None:
+    def scanForTaggedIndex(self, direction: int) -> Union[int, None]:
         """Scan through starting at the current image index for the next
         image that is tagged.
         direction is either +1 or -1 to control direction.

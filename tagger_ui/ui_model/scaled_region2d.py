@@ -2,6 +2,7 @@
 The business model core of the application.
 """
 from dataclasses import dataclass
+from typing import Union
 
 import src.model as model
 from src.model import Region2d
@@ -18,8 +19,8 @@ class ScaledRegion2d:
     this class also stores the Tinker canvas rectangle ID.
     """
 
-    screenRegion: Region2d | None = None
-    imageRegion: Region2d | None = None
+    screenRegion: Union[Region2d, None] = None
+    imageRegion: Union[Region2d, None] = None
 
     # The Tinker canvas rectangle ID
     canvasRectId: int = 0

@@ -68,7 +68,7 @@ class DataAnnotatorUI:
     _root: tk.Tk
 
     @property
-    def current(self) -> uiModel.AnnotatedImage | None:
+    def current(self) -> Union[uiModel.AnnotatedImage, None]:
         """The current annotated image view model"""
         if self._manager is None:
             return None
@@ -282,7 +282,7 @@ class DataAnnotatorUI:
             return
 
         activeRegion = self._manager.activeRegion
-        newRegion: model.Region2d | None = None
+        newRegion: Union[model.Region2d, None] = None
         if activeRegion is None:
             newRegion = model.Region2d(event.x, event.y, 1, 1)
 
@@ -470,7 +470,7 @@ class DataAnnotatorUI:
     # ##############################################################################################
 
     # The collection of annotated images we need to process for our test set
-    _manager: uiModel.AnnotatedImagesManager | None = None
+    _manager: Union[uiModel.AnnotatedImagesManager, None] = None
 
     # The Canvas object that we use to show the image
     _canvas: tk.Canvas

@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Union
 import os
 
 from src import model
@@ -44,7 +44,7 @@ def loadImagesCollectionFromJson(file_name: str) -> model.ImagesCollection:
 
     def imageDecoder(
         dict: dict[str, Any]
-    ) -> dict[str, Any] | model.Region2d | model.ImageInfo | model.ImagesCollection:
+    ) -> Union[dict[str, Any], model.Region2d, model.ImageInfo, model.ImagesCollection]:
         """Decode a JSON dictionary into either a `Region2d`, an `ImageInfo` or an `ImagesInfo`"""
         if "x" in dict:
             return deSerializeRegion2d(dict)

@@ -4,6 +4,7 @@ Unit tests for the data access layer
 import os
 import unittest
 import tempfile
+from typing import Union
 
 from .testData import getTestDataFolder, getTestDataFilePath
 import tagger_ui.data_access_layer as sut
@@ -14,7 +15,7 @@ import tagger_ui.ui_model as uiModel
 
 class TestingAnnotatedImagesDeSerialization(unittest.TestCase):
     def assertRegionsEqual(
-        self, region1: model.Region2d | None, region2: model.Region2d | None
+        self, region1: Union[model.Region2d, None], region2: Union[model.Region2d, None]
     ) -> bool:
         if region1 is None and region2 is None:
             return True

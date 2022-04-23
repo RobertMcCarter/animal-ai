@@ -1,5 +1,11 @@
 #!python
 # pyright: reportUnknownVariableType=false, reportUnknownMemberType=false
+"""
+This is the final pre-training application that takes the original images
+and cuts them into 224x224 sub-images, saving the tens of thousands
+of sub-images into `true` and `false` sub-folders according to the
+tagging data from `animals.json`
+"""
 from dataclasses import dataclass
 import cv2
 import random
@@ -7,7 +13,7 @@ import os
 from PIL import Image as pilImage
 import piexif
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 from src import model
 from src import data_serialization_json as ds
@@ -17,10 +23,12 @@ from tagger_ui.ui_model.timer import Timer
 
 print(f"OpenCV version: {cv2.__version__}")
 
+# The image output directory
+out_dir = r"D:\data\NRSI\__ai_training_images"
 
 # The image dimensions that we'll produce for training an AI
-IMAGE_WIDTH = 128
-IMAGE_HEIGHT = 128
+IMAGE_WIDTH = 224
+IMAGE_HEIGHT = 224
 BLOCK_SIZE = model.Size2d(IMAGE_WIDTH, IMAGE_HEIGHT)
 
 
@@ -130,7 +138,7 @@ def create_image_exif_metadata(image_info: model.ImageInfo) -> bytes:
     return exif_bytes
 
 
-def create_directory(dir: str) -> None:
+def create_directory_if_not_exists(dir: str) -> None:
     """Create the given directory if it doesn't already exist
 
     Args:
@@ -248,7 +256,7 @@ def save_sub_image_tagged_false(
 
 
 def main():
-    """Process the main images `.json` data file to create 128x128 training sub-images."""
+    """Process the main images `.json` data file to create 224x224 training sub-images."""
 
     # Load the list of animals from the animals JSON file
     images_data_file: model.ImagesCollection = ds.loadImagesCollectionFromJson(
@@ -261,10 +269,10 @@ def main():
     )
 
     # Where we will save the 128x128 training images - create true/false sub dirs if required
-    out_dir = r"D:\data\NRSI\__ai_training_images"
     print("Output folder: ", out_dir)
-    create_directory(os.path.join(out_dir, "true"))
-    create_directory(os.path.join(out_dir, "false"))
+    create_directory_if_not_exists(out_dir)
+    create_directory_if_not_exists(os.path.join(out_dir, "true"))
+    create_directory_if_not_exists(os.path.join(out_dir, "false"))
 
     # For every group
     group_count = 0
@@ -272,7 +280,7 @@ def main():
         # For each group we want to track the previous
         group_count += 1
         print(f"Group #{group_count} of {len(image_groups)}")
-        previous_image: Any | None = None
+        previous_image: Union[Any, None] = None
         for image_info in animal_group:
             # Load the image and grab its dimensions
             current_image: Any = cv2.imread(image_info.filePath)
