@@ -17,6 +17,7 @@ def image_test(image_path: Path) -> bool:
         bool: `True` if the folder contains `true` in the path,
               `False` otherwise.
     """
+    # See: https://docs.python.org/3/library/pathlib.html#accessing-individual-parts
     return "true" in image_path.parts
 
 
